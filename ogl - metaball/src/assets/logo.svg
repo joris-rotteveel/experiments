@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="3500px" height="756px" viewBox="0 0 3500 756" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Custom Preset</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Custom-Preset" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Alienation" transform="translate(1100, 250)" fill="#fff" fill-rule="nonzero">
+            <path d="M1183.5,4.4h-58.8v287.2h58.8v-82.4l33.2-37.6l84.4,120h68.8l-114.4-164.4L1363.1,4.4h-68.8l-110.8,130.4V4.4z M1104.9,4.4
+                        h-58.8v287.2h58.8V4.4z M886.1,291.6v-114h115.2v-50.8H886.1V55.2h138V4.4h-196v287.2H886.1z M667.2,69.6L708,180h-81.2L667.2,69.6z
+                         M634.4,4.4L527.2,291.6h58.4l22.8-61.6h118.4l22.8,61.6h59.6L701.6,4.4H634.4z M335.4,135.6V54.4H391c34.4,0,52,14.8,52,40.8
+                        c0,25.6-17.6,40.4-52,40.4H335.4z M335.4,184.8h40l66.4,106.8H509l-71.6-112.4c40.4-11.6,64-40.8,64-84.4
+                        c0-59.2-41.2-90.4-107.2-90.4H276.6v287.2h58.8V184.8z M205.6,291.6h52.8V134.8H131.2v50h69.6c-2.4,35.2-27.2,61.2-64.4,61.2
+                        c-46,0-77.2-39.2-77.2-97.6s31.2-96.8,76.4-96.8c32.4,0,54.4,18.8,62,51.2L254,84C236,32.4,196,0,134.8,0C56.4,0,0,62.4,0,149.6
+                        C0,236,55.6,296,130.8,296c36,0,63.2-14,74.8-32V291.6z"/>
+        </g>
+    </g>
+</svg>
+

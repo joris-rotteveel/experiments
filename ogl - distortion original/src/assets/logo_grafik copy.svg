@@ -1,0 +1,20 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="3500px" height="756px" viewBox="0 0 3500 756" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Custom Preset</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Custom-Preset" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Alienation" transform="translate(1750, 378)" fill="#fff" fill-rule="nonzero">
+            <path d="M1183,4h-58v287h58v-82l33-37l84,120h68l-114-164L1363,4h-68l-110,130V4z M1104,4
+                        h-58v287h58V4z M886,291v-114h115v-50H886V55h138V4h-196v287H886z M667,69L708,180h-81L667,69z
+                         M634,4L527,291h58l22-61h118l22,61h59L701,4H634z M335,135V54H391c34,0,52,14,52,40
+                        c0,25-17,40-52,40H335z M335,184h40l66,106H509l-71-112c40-11,64-40,64-84
+                        c0-59-41-90-107-90H276v287h58V184z M205,291h52V134H131v50h69c-2,35-27,61-64,61
+                        c-46,0-77-39-77-97s31-96,76-96c32,0,54,18,62,51L254,84C236,32,196,0,134,0C56,0,0,62,0,149
+                        C0,236,55,296,130,296c36,0,63-14,74-32V291z"/>
+        </g>
+    </g>
+</svg>
+

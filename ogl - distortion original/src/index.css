@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+#grafik-logo-container {
+  width: 600px;
+  height: 350px;
+  background: red;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

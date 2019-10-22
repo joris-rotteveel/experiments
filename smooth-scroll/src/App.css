@@ -1,0 +1,51 @@
+html,
+body {
+  height: 100%;
+}
+
+[data-scroll] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+[data-scroll-content] {
+  padding: 10vw 0;
+}
+
+.img__simple {
+  margin: 30px;
+  display: block;
+}
+
+/* NEW FOR ITEMS */
+
+.item {
+  margin: 10vh auto;
+  max-width: 100%;
+  position: relative;
+  will-change: transform;
+}
+
+
+
+.item__img-wrap {
+  overflow: hidden;
+  text-align: center;
+  height: 630px;
+
+  will-change: transform;
+}
+
+.item__img {
+  width: auto;
+}
+
+.item__caption {
+  padding: 2rem 1rem;
+}
+
+

@@ -1,0 +1,25 @@
+{
+  "name": "baaaaaaby",
+  "version": "1.0.0",
+  "description": " Make my wish come true. Baby all I want for Christmas is You baby",
+  "main": "sketch.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "socket.io": "^2.1.1"
+  }
+}

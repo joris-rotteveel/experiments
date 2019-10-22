@@ -1,0 +1,35 @@
+// THIN
+$font-weight--thin: 100;
+$font-weight--hairline: $font-weight--thin; // synonym
+// EXTRA-LIGHT
+$font-weight--extra-light: 200;
+$font-weight--ultra-light: $font-weight--extra-light; // synonym
+// LIGHT
+$font-weight--light: 300;
+// REGULAR
+$font-weight--regular: 400;
+$font-weight--normal: $font-weight__regular; // synonym
+$font-weight--book: $font-weight__regular; // synonym
+// MEDIUM
+$font-weight--medium: 500;
+// SEMI-BOLD
+$font-weight--semi-bold: 600;
+$font-weight--demi-bold: $font-weight--semi-bold; // synonym
+// BOLD
+$font-weight--bold: 700;
+// EXTRA-BOLD
+$font-weight--extra-bold: 800;
+$font-weight--ultra-bold: $font-weight--extra-bold; // synonym
+//
+$font-weight--black: 900;
+$font-weight--heavy: $font-weight--black; // synonym
+
+@font-face {
+  font-family: "Reading Regular";
+  // font-weight: $font-weight--bold;
+  src: url("./fonts/ReadingRegular.otf");
+  src: url("./fonts/ReadingRegular.ttf");
+}
+
+// Common fonts
+$default-font: Arial, sans-serif;

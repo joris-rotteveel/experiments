@@ -1,0 +1,34 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.dummy-content {
+  font-size: 3rem;
+  padding: 1rem;
+}
+
+.header {
+  background-image: url("https://galoremag.com/wp-content/uploads/dump/kelis_milkshake_galore_mag.jpeg.gif");
+  height: 900px;
+  width: 100%;
+  position: relative;
+}
+
+#grafik-logo-container {
+  /* background:grey; */
+  height: 100%;
+  position: absolute;
+  bottom:-50%;
+  width:100%;
+  left:0;
+}
+canvas {
+  pointer-events: none;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

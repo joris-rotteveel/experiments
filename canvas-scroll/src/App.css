@@ -1,0 +1,17 @@
+.effect-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.effect {
+  padding: 100px;
+}
+.effect__img {
+  opacity: 0.2;
+ 
+}
+
+
+.section__copy{font-size: 90px;}

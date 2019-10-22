@@ -1,0 +1,75 @@
+.works-container {
+  background-color: $colors-lightest;
+  padding-top: 4px;
+  padding-bottom: 4px;
+
+  .my-masonry-grid {
+    display: flex;
+    margin-left: -5px;
+  }
+  .my-masonry-grid_column {
+    border-left: 5px solid transparent;
+  }
+
+  .work-container {
+    font-stretch: normal;
+    letter-spacing: normal;
+    color: $colors-light;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 1.5;
+    &.has-description {
+      background-color: white;
+    }
+    .description-container__title {
+      font-size: 16px;
+      color: #0d0d0d;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      span {
+        font-size: 14px;
+      }
+      @media screen and (min-width: 768px) {
+        font-size: 24px;
+        span {
+          font-size: 17px;
+        }
+      }
+    }
+
+    .description-container__artist {
+      font-size: 12px;
+      font-style: normal;
+      line-height: 1.75;
+      @media screen and (min-width: 768px) {
+        font-size: 19px;
+        line-height: 1.26;
+      }
+    }
+
+    .description-container {
+      padding: 20px;
+      padding-top: 10px;
+    }
+    a {
+      color: inherit;
+      text-decoration: inherit;
+    }
+  }
+  .work {
+    width: 100%;
+    height: 100%;
+    &.work__item {
+      img {
+        width: 100%;
+      }
+      div {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
