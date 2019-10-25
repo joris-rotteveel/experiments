@@ -24,19 +24,38 @@ const onResize = () => {
 };
 window.addEventListener("resize", onResize);
 
+const drawSource = (angle = 0) => {
+  const { width, height } = screenRect;
+  contextSource.fillStyle = "#000000";
+  contextSource.fillRect(0, 0, width, height);
+  // Rotated rectangle
+  contextSource.save();
+  contextSource.translate(width / 2, height / 2);
+  contextSource.rotate(angle);
+  contextSource.translate(-width / 2, -height / 2);
+  contextSource.fillStyle = "#FFFFFF";
+  contextSource.font = `${20+Math.cos(angle)*300}px ${fontFamily}`;
+  contextSource.textAlign = "center";
+  contextSource.textBaseline = "middle";
+  // contextSource.fillText("my", width / 2, height / 2 - 100);
+  contextSource.fillText("grafik", width / 2, height / 2);
+  contextSource.restore();
+};
+
 const update = delta => {
   const { width, height } = screenRect;
   angle += 0.1;
 
   context.fillStyle = "#000000";
   context.fillRect(0, 0, width, height);
+  drawSource();
 
   //draw letter to seperate canvas
   //copy pixels rect from that canvas onto this canvas
   //profit
 
-  const tilesX = 9; //+Math.abs(Math.cos(angle*0.3)*6);
-  const tilesY = 9; //+Math.abs(Math.sin(angle)*6);;
+  const tilesX = 2; //+Math.abs(Math.cos(angle*0.3)*6);
+  const tilesY = 4; //+Math.abs(Math.sin(angle)*6);;
 
   const tileW = Math.ceil(width / tilesX);
   const tileH = Math.ceil(height / tilesY);
@@ -44,19 +63,20 @@ const update = delta => {
   for (let y = 0; y < tilesY; y++) {
     for (let x = 0; x < tilesX; x++) {
       const wave = Math.sin(angle + x * y * 0.08) * 50;
-      const sx = x * tileW + wave*2;
+      drawSource(Math.sin(x * y + angle)*0.25*Math.PI);
+      const sx = x * tileW + wave * 2;
       const sy = y * tileH;
       const sw = tileW;
       const sh = tileH;
 
       const sourcePixels = contextSource.getImageData(sx, sy, sw, sh);
 
-      const dx = x * tileW
-      const dy = y * tileH;;
+      const dx = x * tileW;
+      const dy = y * tileH;
       const dw = tileW;
       const dh = tileH;
-
       context.putImageData(sourcePixels, dx, dy);
+
     }
   }
 
@@ -65,22 +85,7 @@ const update = delta => {
 
 const setup = () => {
   onResize();
-  const { width, height } = screenRect;
-  contextSource.fillStyle = "#000000";
-  contextSource.fillRect(0, 0, width, height);
-
-  // contextSource.fillStyle = "#111111";
-  // contextSource.beginPath();
-  // contextSource.arc(width / 2, height / 2, 250, 0, 2 * Math.PI);
-  // contextSource.fill();
-  // contextSource.stroke();
-
-  contextSource.fillStyle = "#FFFFFF";
-  contextSource.font = `${400}px ${fontFamily}`;
-  contextSource.textAlign = "center";
-  contextSource.textBaseline = "middle";
-  contextSource.fillText("my", width / 2, height / 2-100);
-  contextSource.fillText("milkshake", width / 2, height / 2+200);
+  drawSource();
   requestAnimationFrame(update);
 };
 
