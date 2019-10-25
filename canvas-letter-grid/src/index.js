@@ -9,7 +9,7 @@ const canvasElement = document.getElementById("app");
 const context = canvasElement.getContext("2d");
 
 const fontFamily = '"Helvetica"';
-const letter = "yard";
+const letter = "grafik";
 
 const onResize = () => {
   canvasElement.width = window.innerWidth;
@@ -35,8 +35,8 @@ const update = delta => {
   //copy pixels rect from that canvas onto this canvas
   //profit
 
-  const tilesX = 12;
-  const tilesY = 12;
+  const tilesX = 9; //+Math.abs(Math.cos(angle*0.3)*6);
+  const tilesY = 9; //+Math.abs(Math.sin(angle)*6);;
 
   const tileW = Math.ceil(width / tilesX);
   const tileH = Math.ceil(height / tilesY);
@@ -44,15 +44,15 @@ const update = delta => {
   for (let y = 0; y < tilesY; y++) {
     for (let x = 0; x < tilesX; x++) {
       const wave = Math.sin(angle + x * y * 0.08) * 50;
-      const sx = x * tileW + wave;
+      const sx = x * tileW + wave*2;
       const sy = y * tileH;
       const sw = tileW;
       const sh = tileH;
 
       const sourcePixels = contextSource.getImageData(sx, sy, sw, sh);
 
-      const dx = x * tileW;
-      const dy = y * tileH;
+      const dx = x * tileW
+      const dy = y * tileH;;
       const dw = tileW;
       const dh = tileH;
 
@@ -69,19 +69,18 @@ const setup = () => {
   contextSource.fillStyle = "#000000";
   contextSource.fillRect(0, 0, width, height);
 
-  
- 
-  contextSource.fillStyle = "#111111";
-  contextSource.beginPath();
-  contextSource.arc(width / 2, height / 2, 250, 0, 2 * Math.PI);
-  contextSource.fill();
-  contextSource.stroke();
+  // contextSource.fillStyle = "#111111";
+  // contextSource.beginPath();
+  // contextSource.arc(width / 2, height / 2, 250, 0, 2 * Math.PI);
+  // contextSource.fill();
+  // contextSource.stroke();
 
   contextSource.fillStyle = "#FFFFFF";
   contextSource.font = `${400}px ${fontFamily}`;
   contextSource.textAlign = "center";
   contextSource.textBaseline = "middle";
-  contextSource.fillText(letter, width / 2, height / 2);
+  contextSource.fillText("my", width / 2, height / 2-100);
+  contextSource.fillText("milkshake", width / 2, height / 2+200);
   requestAnimationFrame(update);
 };
 
