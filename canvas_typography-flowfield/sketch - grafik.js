@@ -14,12 +14,11 @@ const sketch = ({ width, height }) => {
   const margin = width * 0.15;
   const fontFamily = '"Helvetica"';
   const background = "hsl(0, 0%, 0%)";
-  const sentnce =
-    "My milkshake brings all the boys to the yard  And they're like, it's better than yours Damn right it's better than yours ";
+  const sentnce = "founded in 2012, grafik studio   ";
   const characters = sentnce.split("");
 
-  const redIndexStart = sentnce.indexOf("milkshake");
-  const redIndexEnd = "milkshake".length;
+  const redIndexStart = sentnce.indexOf("grafik");
+  const redIndexEnd = "grafik".length;
 
   const typeState = [...characters];
 
@@ -39,7 +38,7 @@ const sketch = ({ width, height }) => {
         if (charIndex > characters.length - 1) {
           loops++;
           charIndex = 0;
-          if (loops === 4) {
+          if (loops === 21) {
             shouldChange = true;
           } else {
             shouldChange = false;
@@ -54,7 +53,7 @@ const sketch = ({ width, height }) => {
         points.push({
           size: isInRange ? 40 : 20, //+ 20 * (charIndex / characters.length), //Math.abs(baseSize * size + random.gaussian() * sizeOffset),
           rotation: n * Math.PI * 0.65,
-          offsetAngle: n * Math.PI*2,
+          offsetAngle: n * Math.PI,
           character: characters[charIndex],
           characterIndex: charIndex,
           position: [u, v],
@@ -69,11 +68,11 @@ const sketch = ({ width, height }) => {
 
   const grid = createGrid();
   window.onmousedown = () => {
+    angle += 0.05;
   };
   return ({ context, width, height, playhead }) => {
     context.fillStyle = background;
     context.fillRect(0, 0, width, height);
-    angle += 0.05;
 
     grid.forEach(
       ({ position, rotation, size, characterIndex, offsetAngle, colour }) => {
@@ -81,10 +80,10 @@ const sketch = ({ width, height }) => {
         // do the magic here - we can change this formula and get very different behaviour
         const x =
           lerp(margin, width - margin, u) +
-          Math.cos(+angle) * (9000/characterIndex );
+          Math.cos(+angle) * (characterIndex * 58);
         const y =
           lerp(margin, height - margin, v) +
-          Math.cos(+angle) * (-100 + (9000/characterIndex ));
+          Math.cos(+angle) * (-100 + characterIndex * 54);
 
         context.fillStyle = colour;
         context.textAlign = "center";

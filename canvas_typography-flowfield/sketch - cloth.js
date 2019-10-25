@@ -14,12 +14,9 @@ const sketch = ({ width, height }) => {
   const margin = width * 0.15;
   const fontFamily = '"Helvetica"';
   const background = "hsl(0, 0%, 0%)";
-  const sentnce =
-    "My milkshake brings all the boys to the yard  And they're like, it's better than yours Damn right it's better than yours ";
-  const characters = sentnce.split("");
-
-  const redIndexStart = sentnce.indexOf("milkshake");
-  const redIndexEnd = "milkshake".length;
+  const characters = "My milkshake brings all the boys to the yard  And they're like, it's better than yours Damn right it's better than yours ".split(
+    ""
+  );
 
   const typeState = [...characters];
 
@@ -27,8 +24,7 @@ const sketch = ({ width, height }) => {
     const points = [];
     const frequency = random.range(0.75, 1.25);
     let charIndex = 0;
-    let shouldChange = false;
-    let loops = 0;
+    let colour = "#FF0000";
     for (let x = 0; x < count; x++) {
       for (let y = 0; y < count; y++) {
         let u = x / (count - 1);
@@ -36,29 +32,16 @@ const sketch = ({ width, height }) => {
 
         const n = random.noise2D(u * frequency, v * frequency);
 
-        if (charIndex > characters.length - 1) {
-          loops++;
-          charIndex = 0;
-          if (loops === 4) {
-            shouldChange = true;
-          } else {
-            shouldChange = false;
-          }
-        }
-
-        const isInRange =
-          shouldChange &&
-          charIndex >= redIndexStart - 1 &&
-          charIndex < redIndexStart + redIndexEnd;
+        if (charIndex > characters.length - 1) charIndex = 0;
 
         points.push({
-          size: isInRange ? 40 : 20, //+ 20 * (charIndex / characters.length), //Math.abs(baseSize * size + random.gaussian() * sizeOffset),
+          color: colour,
+          size: 20 + 20 * (charIndex / characters.length), //Math.abs(baseSize * size + random.gaussian() * sizeOffset),
           rotation: n * Math.PI * 0.65,
-          offsetAngle: n * Math.PI*2,
+          offsetAngle: n * Math.PI,
           character: characters[charIndex],
           characterIndex: charIndex,
-          position: [u, v],
-          colour: isInRange ? "#ffffff" : "#FFFFFF"
+          position: [u, v]
         });
 
         charIndex += 1;
@@ -68,23 +51,23 @@ const sketch = ({ width, height }) => {
   };
 
   const grid = createGrid();
-  window.onmousedown = () => {
-  };
+  window.onmousedown=()=>{
+    angle += 0.05;
+  }
+
   return ({ context, width, height, playhead }) => {
+    
     context.fillStyle = background;
     context.fillRect(0, 0, width, height);
-    angle += 0.05;
 
+    let colour = "#ff0000";
     grid.forEach(
-      ({ position, rotation, size, characterIndex, offsetAngle, colour }) => {
+      ({ position, rotation, size, characterIndex, offsetAngle }) => {
         const [u, v] = position;
         // do the magic here - we can change this formula and get very different behaviour
-        const x =
-          lerp(margin, width - margin, u) +
-          Math.cos(+angle) * (9000/characterIndex );
+        const x = lerp(margin, width - margin, u) + Math.cos(offsetAngle+angle) * 100;
         const y =
-          lerp(margin, height - margin, v) +
-          Math.cos(+angle) * (-100 + (9000/characterIndex ));
+          lerp(margin, height - margin, v) - Math.sin(offsetAngle+angle) * 200;
 
         context.fillStyle = colour;
         context.textAlign = "center";
@@ -97,6 +80,11 @@ const sketch = ({ width, height }) => {
         context.globalAlpha = 0.85;
         context.fillText(typeState[characterIndex], 0, 0);
         context.restore();
+        if (characters[characterIndex] === " ") {
+          colour = "#FF0000";
+        } else {
+          colour = "#FFFFFF";
+        }
       }
     );
   };
