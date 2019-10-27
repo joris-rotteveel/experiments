@@ -57,8 +57,8 @@ const update = delta => {
   //copy pixels rect from that canvas onto this canvas
   //profit
 
-  const tilesX = 5; //+Math.abs(Math.cos(angle*0.3)*6);
-  const tilesY =3; //+Math.abs(Math.sin(angle)*6);;
+  const tilesX = 8; //+Math.abs(Math.cos(angle*0.3)*6);
+  const tilesY = 8; //+Math.abs(Math.sin(angle)*6);;
 
   const tileW = Math.ceil(width / tilesX);
   const tileH = Math.ceil(height / tilesY);
@@ -75,9 +75,10 @@ const update = delta => {
 
       const sourcePixels = contextSource.getImageData(sx, sy, sw, sh);
 
-      const dx = x * tileW + Math.cos(x * y + angle) * 0;
-      const dy = y * tileH + Math.sin(x * y + angle) * 0;
-
+      const dx = x * tileW;
+      const dy = y * tileH;
+      const dw = tileW;
+      const dh = tileH;
       context.putImageData(sourcePixels, dx, dy);
     }
   }

@@ -11,7 +11,7 @@ const randomColour = () => {
   return colours[Math.round(Math.random() * (colours.length - 1))];
 };
 
-const getLineWidth = () => 1; //(Math.random() > 0.8 ? 100 : 70);
+const getLineWidth = () => (Math.random() > 0.8 ? 100 : 70);
 
 const settings = {
   dimensions: [2048, 2048],
@@ -26,7 +26,9 @@ const settings = {
 
 const w = 240;
 const h = 240;
-const center = 2048 / 2;
+const center = (2048) / 2;
+
+let counter = 0;
 
 const LT = createVector(center - w / 2, center - w / 2);
 const LB = createVector(LT.x, LT.y + h);
@@ -174,11 +176,9 @@ const defaultStyle = {
   lineCap: "square"
 };
 
-let counter = 0;
-const lyrics =
-  "my milkshake brinks all the boys to the yard, damn right it's better than yours";
 const sketch = ({ width, height }) => {
   return ({ context, width, height }) => {
+    counter++;
     // for (let index = 0; index < 100; index++) {
     //   const element = 100;
     //   extrudeSide(Math.random()*2048, Math.random()*2048);
@@ -197,33 +197,6 @@ const sketch = ({ width, height }) => {
       Object.keys(style).forEach(key => {
         context[key] = style[key];
       });
-      context.fillStyle = "#000000";
-      context.textAlign = "left";
-      context.font = "48px Verdana";
-
-      const dx = x - from.x;
-      const dy = y - from.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      const amount = dist / 40;
-
-      let text = "";
-      for (let i = 0; i < amount; i++) {
-        text += i;//lyrics.charAt(counter);
-        counter++;
-        if (counter > lyrics.length - 1) {
-          counter = 0;
-        }
-      }
-
-      const angle = Math.atan2(dy, dx); 
-      context.save();
-      context.translate(from.x, from.y);
-      context.rotate(angle);
-      context.fillText(text, 0, 0);
-      // context.rotate(-angle);
-      // context.translate(-from.x, -from.y);
-      context.restore();
 
       context.beginPath();
       context.moveTo(x, y);
@@ -231,6 +204,7 @@ const sketch = ({ width, height }) => {
       context.stroke();
       Object.keys(defaultStyle).forEach(key => {
         context[key] = defaultStyle[key];
+        console.log(context[key]);
       });
       //draw a rect on the points
       const w = 10;
