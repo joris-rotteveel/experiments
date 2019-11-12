@@ -33,11 +33,14 @@ const LB = createVector(LT.x, LT.y + h);
 const RB = createVector(LT.x + w, LT.y + h);
 const RT = createVector(LT.x + w, LT.y);
 const style = { lineWidth: getLineWidth(), strokeStyle: randomColour() };
+let counter = 0;
+const lyrics =
+  "my milkshake brings all the boys to the yard, damn right it's better than yours".replace(" ","");
 const lines = [
-  { from: LT, to: LB, style },
-  { from: LB, to: RB, style },
-  { from: RB, to: RT, style },
-  { from: RT, to: LT, style }
+  { from: LT, to: LB, style, letterIndex: 0 },
+  { from: LB, to: RB, style, letterIndex: 1 },
+  { from: RB, to: RT, style, letterIndex: 2 },
+  { from: RT, to: LT, style, letterIndex: 3 }
 ];
 
 const sqr = x => {
@@ -127,6 +130,11 @@ const extrudeSide = (x, y) => {
 
   const width = getLineWidth(); //Math.round(5 + lines.length / 5);
 
+  let currentLength = lines.length - 1;
+  if (currentLength > lyrics.length - 4) {
+    currentLength = 0;
+  }
+
   lines.splice(
     index,
     //remove the previous connection
@@ -134,29 +142,60 @@ const extrudeSide = (x, y) => {
     {
       from: start,
       to: startVector,
-      style: { lineWidth: width, strokeStyle: randomColour() }
+      style: {
+        lineWidth: width,
+        strokeStyle: randomColour()
+      }
     },
     {
       from: startVector,
       to: newStart,
-      style: { lineWidth: width, strokeStyle: randomColour() }
+      style: {
+        lineWidth: width,
+        strokeStyle: randomColour()
+      }
     },
     {
       from: newStart,
       to: newEnd,
-      style: { lineWidth: width, strokeStyle: randomColour() }
+      style: {
+        lineWidth: width,
+        strokeStyle: randomColour()
+      }
     },
     {
       from: newEnd,
       to: endVector,
-      style: { lineWidth: width, strokeStyle: randomColour() }
+      style: {
+        lineWidth: width,
+        strokeStyle: randomColour()
+      }
     },
     {
       from: endVector,
       to: secondPointOnStructure,
-      style: { lineWidth: width, strokeStyle: randomColour() }
+      style: {
+        lineWidth: width,
+        strokeStyle: randomColour()
+      }
     }
   );
+
+  let letterIndex = 0;
+
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    const { to, from } = line;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const amount = dist / 31;
+    const end = Math.round(amount);
+    const text = "" + lyrics.substring(letterIndex, letterIndex + end);
+    line.text = text;
+    letterIndex += end;
+    if (letterIndex > lyrics.length) letterIndex = 0;
+  }
 };
 window.mouseClicked = () => {
   extrudeSide(mouseX, mouseY);
@@ -174,20 +213,11 @@ const defaultStyle = {
   lineCap: "square"
 };
 
-let counter = 0;
-const lyrics =
-  "my milkshake brinks all the boys to the yard, damn right it's better than yours";
 const sketch = ({ width, height }) => {
   return ({ context, width, height }) => {
-    // for (let index = 0; index < 100; index++) {
-    //   const element = 100;
-    //   extrudeSide(Math.random()*2048, Math.random()*2048);
-
-    // }
-
     context.clearRect(0, 0, width, height);
 
-    lines.forEach(({ to, from, style = {} }, index) => {
+    lines.forEach(({ to, from, style = {}, text }, index) => {
       const { x, y } = to;
 
       Object.keys(defaultStyle).forEach(key => {
@@ -203,38 +233,25 @@ const sketch = ({ width, height }) => {
 
       const dx = x - from.x;
       const dy = y - from.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
 
-      const amount = dist / 40;
-
-      let text = "";
-      for (let i = 0; i < amount; i++) {
-        text += i;//lyrics.charAt(counter);
-        counter++;
-        if (counter > lyrics.length - 1) {
-          counter = 0;
-        }
-      }
-
-      const angle = Math.atan2(dy, dx); 
+      const angle = Math.atan2(dy, dx);
       context.save();
       context.translate(from.x, from.y);
       context.rotate(angle);
       context.fillText(text, 0, 0);
-      // context.rotate(-angle);
-      // context.translate(-from.x, -from.y);
+      
       context.restore();
 
-      context.beginPath();
-      context.moveTo(x, y);
-      context.lineTo(from.x, from.y);
-      context.stroke();
+      // context.beginPath();
+      // context.moveTo(x, y);
+      // context.lineTo(from.x, from.y);
+      // context.stroke();
       Object.keys(defaultStyle).forEach(key => {
         context[key] = defaultStyle[key];
       });
       //draw a rect on the points
       const w = 10;
-      // context.strokeRect(x - w / 2, y - w / 2, w, w);
+      context.strokeRect(x - w / 2, y - w / 2, w, w);
     });
   };
 };
