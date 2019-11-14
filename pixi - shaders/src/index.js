@@ -63,11 +63,11 @@ attribute vec2 aUvs;
 uniform mat3 translationMatrix;
 uniform mat3 projectionMatrix;
 
-varying vec2 vUvs;
+varying vec2 u_uvs;
 
 void main() {
 
-  vUvs = aUvs;
+  u_uvs = aUvs;
   vec3 pos =vec3(aVertexPosition, 1.0);
   vec4 totalPos=vec4((projectionMatrix * translationMatrix * pos).xy, 0.0, 1.0);
   gl_Position = totalPos;
@@ -78,7 +78,7 @@ const fragmentSrc = `
 
 precision mediump float;
 
-varying vec2 vUvs;
+varying vec2 u_uvs;
 
 uniform sampler2D uSampler2;
 uniform float u_time;
@@ -91,44 +91,40 @@ float map(float value, float x1, float y1, float x2, float y2) {
 
 
 void main() {
-  //convert to 0 - 1 
-  //gradient black to white
   float max=1.;
   float min=-1.*(max);
-  float distortFactor=cos(u_time*5.)*max;
-
-
-  
+  float distortFactor=cos(u_time*.55)*max;
   float normalised= map(distortFactor,min,max,0.,1. );
 
 
-  float times=5.;// * (normalised);
-  vec2 direction=vec2(0.,fract(vUvs.y*vUvs.y));
-
-  //distort the uv
-  // gl_FragColor = texture2D(uSampler2, vUvs - vUvs * direction * normalised * 2.95);
+  float times=5.;//* (normalised);
 
   
-  gl_FragColor = texture2D(uSampler2,  fract(vUvs * times)  );
-  gl_FragColor = texture2D(uSampler2, vUvs - fract(vUvs * times) * normalised * 0.1 );
+  // gl_FragColor = texture2D(uSampler2,  fract(u_uvs * times)  );
+  // gl_FragColor = texture2D(uSampler2, u_uvs - fract(u_uvs * times) * normalised * 0.1 );
 
+  float intensity=1.0;
+  float dispFactor=(1.-u_uvs.y);
+  float currentDisplacment =dispFactor*intensity;
+  float pixelOffset= 0.95*currentDisplacment;//*0.2;
 
-
-  //strecth and multiply
-  vec2 multiply= vec2(11.,0.);
+  float radius=0.5;
+  float xpos=0.5;//0.5+cos(u_time)*radius;
+  float ypos=0.5+sin(u_time)*radius;
   
-  // gl_FragColor = texture2D(uSampler2, vUvs - multiply * normalised * .1 );
 
-  vec2 repeat=fract(times*vUvs);
-  repeat.x+=vUvs.x*vUvs.y;
-  repeat.y+=vUvs.x*vUvs.y;
-  vec4 color=texture2D(uSampler2,repeat);
-  // gl_FragColor = color;
-  // gl_FragColor = vec4(color.x,color.y,1.0,1.0);
+  float distFromCenter = distance(u_uvs.xy, vec2(xpos,0.5+sin(u_time)*radius));
+  pixelOffset=(distFromCenter)*0.8;
 
-  // vec2 uv=vUvs - vUvs * vec2(1.,0.0) * normalised * 0.5;
-  // uv.x=vUvs.x;
-  // gl_FragColor = texture2D(uSampler2, uv);
+
+  vec4 image=texture2D(uSampler2, vec2(u_uvs.x+pixelOffset, u_uvs.y));
+  vec4 debug =vec4(pixelOffset,pixelOffset,pixelOffset,1.0);
+
+  gl_FragColor = mix(image,debug,0.9);
+  // gl_FragColor=vec4(pixelOffset,pixelOffset,pixelOffset,1.0);
+
+
+
 
 }`;
 
