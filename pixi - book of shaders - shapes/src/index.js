@@ -93,37 +93,18 @@ float map(float value, float x1, float y1, float x2, float y2) {
 
 
 void main() {
-  float max=1.;
-  float min=-1.*(max);
-  float distortFactor=cos(u_time*.55)*max;
-  float normalised= map(distortFactor,min,max,0.,1. );
 
 
-  float times=5.;//* (normalised);
+  //draw black pixels aroiund the border
+  float thickness=map(cos(u_time),-1.,1.,0.1,1.)*0.5;
+  float left=step(thickness,u_uvs.x);
+  float right=step(thickness,1.0-u_uvs.x);
+  float top=step(thickness,u_uvs.y);
+  float bottom=step(thickness,1.0-u_uvs.y);
 
+  vec3 color = vec3(left*top*bottom*right);
   
-  // gl_FragColor = texture2D(u_image,  fract(u_uvs * times)  );
-  // gl_FragColor = texture2D(u_image, u_uvs - fract(u_uvs * times) * normalised * 0.1 );
-
-  float intensity=1.0;
-  float dispFactor=(1.-u_uvs.y);
-  float currentDisplacment =dispFactor*intensity;
-  float pixelOffset= 0.95*currentDisplacment;//*0.2;
-
-  float radius=0.95;
-  float xpos=0.5;//0.5+cos(u_time)*radius;
-  float ypos=0.5+sin(u_time)*radius;
-  
-
-  float distFromCenter = distance(u_uvs.xy, vec2(xpos,0.5+sin(u_time)*radius))*0.5;
-  pixelOffset=(distFromCenter)*0.999;
-
-
-  vec4 image=texture2D(u_image, vec2(u_uvs.x+pixelOffset, u_uvs.y));
-  vec4 altImage=texture2D(u_image_alt, vec2(u_uvs.x+pixelOffset*1., u_uvs.y));
-  vec4 debug =vec4(pixelOffset,pixelOffset,pixelOffset,1.0);
-
-  gl_FragColor = mix(image,debug,0.9);
+  gl_FragColor = vec4(color.r,color.g,color.b,1.0);
 
 
 
