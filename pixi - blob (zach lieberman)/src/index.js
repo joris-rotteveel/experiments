@@ -40,7 +40,7 @@ const updateForces = () => {
     particles[i].resetForce();
   }
   for (let i = 0; i < particles.length; i++) {
-    particles[i].addRepulsionForce(mouseX, mouseY, 200, 0.7);
+    particles[i].addRepulsionForce(mouseX, mouseY, 550, 0.7);
     for (let j = 0; j < i; j++) {
       particles[i].addRepulsionForceParticle(particles[j], 50, 0.1);
     }
@@ -80,7 +80,7 @@ const update = delta => {
 const createParticles = amount => {
   for (let i = 0; i < amount; i++) {
     const x = 500 + 500 * Math.cos((i / 200.0) * TWO_PI);
-    const y = 500 + 500 * Math.sin((i / 200.0) * TWO_PI);
+    const y = 100 + 500 * Math.sin((i / 200.0) * TWO_PI);
 
     const particle = new Particle(x, y);
 
@@ -102,7 +102,7 @@ const createParticles = amount => {
 const setup = () => {
   // Add the graphics to the stage
 
-  createParticles(20);
+  createParticles(40);
   app.ticker.add(update);
 };
 

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "./App.css";
 import miles from "./miles.jpg";
 
-const lerp = (a, b, n) => (1 - n) * a + n * b;
+
 
 class Item {
   constructor(element, { direction }) {
