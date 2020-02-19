@@ -6,7 +6,6 @@ export default class App {
     const blocks = [...document.querySelectorAll("[data-block]")];
 
     this.pages = blocks.length;
-    this.sections = blocks.length;
     this.sectionHeight = window.innerHeight;
 
     this.debugText = document.querySelector(".debug");
