@@ -1,0 +1,42 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #606063;
+  overflow: hidden;
+}
+
+.scrollArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+}
+
+.block {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: grey;
+  &:nth-of-type(odd) {
+    background: #e0e0e0;
+  }
+}
+
+.block__content {
+  background-color: aquamarine;
+  width: 500px;
+  height: 200px;
+}
+
+.debug {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
