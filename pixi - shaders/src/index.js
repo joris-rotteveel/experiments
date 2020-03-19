@@ -2,13 +2,22 @@ import "./index.css";
 import * as PIXI from "pixi.js";
 import Image from "./assets/hello.jpg";
 import Image2 from "./assets/alt.png";
+import { mapRange } from "./math";
+
+let mouse = { x: 0, y: 0 };
 
 const app = new PIXI.Application({
   width: window.innerWidth,
   height: window.innerHeight,
-  transparent: true
-  // backgroundColor: 0xffffff
+
+  backgroundColor: 0xffffff
 });
+
+document.addEventListener("mousemove", e => {
+  mouse.x = e.pageX;
+  mouse.y = e.pageY;
+});
+
 const geometry = new PIXI.Geometry()
   .addAttribute(
     "aVertexPosition", // the attribute name
@@ -85,6 +94,10 @@ varying vec2 u_uvs;
 uniform sampler2D u_image;
 uniform sampler2D u_image_alt;
 uniform float u_time;
+uniform float u_mouseX;
+uniform float u_mouseY;
+uniform float u_vp_width;
+uniform float u_vp_height;
 
 float map(float value, float x1, float y1, float x2, float y2) {
 
@@ -119,38 +132,155 @@ void main() {
 
 /////
 
+//  CIRCLE ZOOM IN,PINCH OUT
+// float radius = 3.;
+// float depth = radius/2.;
 
-float radius = 3.;
-float depth = radius/2.;
+// float circleSize =33.;
 
-float circleSize =33.;
+// vec2 uv = u_uvs;
+
+// vec2 distanceFromCenter = uv - center;
+// float distXSquared = distanceFromCenter.x * distanceFromCenter.x;
+// float distYSquared = distanceFromCenter.y * distanceFromCenter.y;
+
+// float distortionRange = distXSquared * circleSize + distYSquared * circleSize;
+
+// float dx =( distortionRange * depth)/ radius * ( distortionRange / radius -1. );
+
+// //only distort when within  radius
+// float mask = distortionRange > radius ? distortionRange : distortionRange + dx;
+
+// vec2 ma = center + ( uv - center ) * mask / distortionRange;
+
+// gl_FragColor = vec4(texture2D(u_image, ma).rgb, 1.); 
+
+///////
+
+// PINCH IN
+
+            // vec2 uv = u_uvs;
+            // vec2 mouse= vec2(u_mouseX,u_mouseY);
+
+            // vec2 distanceFromCenter = uv - mouse;
+            // float dy= uv.y-mouse.y;
+            // float dx=uv.x-mouse.x;
+            // float distXSquared = distanceFromCenter.x * distanceFromCenter.x;
+            // float distYSquared = distanceFromCenter.y * distanceFromCenter.y;
+
+            // // the bigger the distance, the smaller the distortion
+
+            // float angle = atan(dy, dx);
+            // vec2 pct = distanceFromCenter / vec2(0.15,0.15);
+            //  float stickyLength =  0.5;
+
+
+            // float offsetX =uv.x /(cos(angle) * stickyLength * pct.x);
+            // float offsetY =uv.y / (sin(angle) * stickyLength * pct.y);
+
+            // gl_FragColor = vec4(texture2D(u_image, vec2(offsetX,offsetY)).rgb, 1.); 
+
+
+//  TWIRL
+
+// vec2 uv = u_uvs;
+// vec2 point=center;
+// point=vec2(u_mouseX,u_mouseY);
+// float dist= distance(point,uv)/0.5;
+
+// uv *= dist;
+// gl_FragColor = vec4(texture2D(u_image, uv).rgb, 1.); 
+
+
+
+//  distort from a point
+
+// float distortionFactor=0.2;
+// float strength=cos(u_time);
+// vec2 uv = u_uvs;
+// vec2 point=center;
+// point=vec2(u_mouseX,u_mouseY);
+
+// float dist= distance(point,uv);
+
+// uv +=dist * strength * distortionFactor;
+// gl_FragColor = vec4(texture2D(u_image, uv).rgb, 1.); 
+
+
+
+//  distort from a point
+
+// https://www.shadertoy.com/view/lslGRN
+
+// vec2 uv = u_uvs;
+// float strength=4.05;
+// vec2 point=center;
+// // point=vec2(u_mouseX,u_mouseY);
+
+// float theta  = atan(uv.y-point.y, uv.x-point.x);
+// float radius = length(uv);
+// radius = pow(radius, strength);
+//   uv.x = radius * cos(theta);
+//   uv.y = radius * sin(theta);
+
+
+// gl_FragColor = vec4(texture2D(u_image, uv).rgb, 1.); 
+
+// }
+
+
+
+
+//  pinch from a point
+
+//  https://www.shadertoy.com/view/XlSGRw
+
+// vec2 uv = u_uvs;
+
+// vec2 point=center;
+// point=vec2(u_mouseX,u_mouseY);
+
+// vec2 dir = normalize( point - uv );
+// float distance = length( center - uv );
+// float strength = .3;
+// float f = exp( strength * ( distance  - 0.5) ) - 1.;
+
+// gl_FragColor = vec4(texture2D(u_image, uv+f*dir).rgb, 1.); 
+
+// }
+
+//  barrel distortion from 0,0
+
+//   https://www.shadertoy.com/view/MlSXR3
 
 vec2 uv = u_uvs;
+vec2 point=center;
+point=vec2(u_mouseX,u_mouseY);
 
-vec2 distanceFromCenter = uv - center;
-float distXSquared = distanceFromCenter.x * distanceFromCenter.x;
-float distYSquared = distanceFromCenter.y * distanceFromCenter.y;
+// positive values of K1 give barrel distortion, negative give pincushion
+    float barrelDistortion1 = 0.0; // K1 in text books
+    float barrelDistortion2 = 0.91; // K2 in text books
+    float r2 = (point.x-uv.x)*(point.x-uv.x) + (point.y-uv.y)*(point.y-uv.y);
+    uv *= 1.0 + barrelDistortion1 * r2 + barrelDistortion2 * r2 * r2;
 
-float distortionRange = distXSquared * circleSize + distYSquared * circleSize;
+gl_FragColor = vec4(texture2D(u_image, uv).rgb, 1.); 
 
-float dx =( distortionRange * depth)/ radius * ( distortionRange / radius -1. );
-
-//only distort when within  radius
-float mask = distortionRange > radius ? distortionRange : distortionRange + dx;
-
-vec2 ma = center + ( uv - center ) * mask / distortionRange;
-
-gl_FragColor = vec4(texture2D(u_image, ma).rgb, 1.); 
+}
 
 
 
 
-}`;
+
+`;
 
 const uniforms = {
-  u_image: PIXI.Texture.from(Image),
+  u_image: PIXI.Texture.from(Image2),
   u_image_alt: PIXI.Texture.from(Image2),
-  u_time: 0
+  u_time: 0,
+  u_mouseX: 0.5,
+  u_mouseY: 0.5,
+  u_vp_width: window.innerWidth,
+  u_vp_height: window.innerHeight
 };
 
 const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniforms);
@@ -168,7 +298,9 @@ window.addEventListener("resize", function() {
 
 const update = delta => {
   // quad.rotation += 0.01;
-  quad.shader.uniforms.u_time += 0.01; //(quad.rotation % 360) / 360;
+  quad.shader.uniforms.u_time += 0.01;
+  quad.shader.uniforms.u_mouseX = mouse.x / window.innerWidth;
+  quad.shader.uniforms.u_mouseY = mouse.y / window.innerHeight;
 };
 
 const setup = () => {
