@@ -1,36 +1,38 @@
 <template>
-  <div>
-    <div class="top" ref="top">
+  <!-- <div class="top" ref="top">
       <img :src="activeHero.src" />
-    </div>
-    <div class="project">
-      <main ref="container" class="content">
-        <router-link to="/">Go home</router-link>
-        <h2>{{ project.id }}</h2>
-        <section>
-          <IntrinsicImage
-            v-for="(image, index) in project.images"
-            ref="images"
-            :key="index"
-            :settings="image"
-          ></IntrinsicImage>
-        </section>
-      </main>
+    </div> -->
+  <div class="project">
+    <main ref="container" class="content">
+      <router-link to="/">Go home</router-link>
+      <h2>{{ project.id }}</h2>
+      <section>
+        <IntrinsicImage
+          v-for="(image, index) in project.images"
+          ref="images"
+          :key="index"
+          :settings="image"
+        ></IntrinsicImage>
+      </section>
+    </main>
 
-      <div class="next">
-        <router-link :to="`/project/${nextProject.id}`">
-          Next
-        </router-link>
-      </div>
+    <div ref="link" class="next">
+      <router-link class="next__link" :to="`/project/${nextProject.id}`">
+        Next
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin.js";
 import IntrinsicImage from "../components/IntrinsicImage.vue";
 import { mapRange } from "../utils/math";
-import gsap from "gsap";
+import { actions as animationActions } from "../observables/ProjectsObservable";
+
+gsap.registerPlugin(ScrollToPlugin);
 
 export default {
   components: {
@@ -55,31 +57,28 @@ export default {
       return this.$store.getters["projects/getNextProject"](
         parseInt(this.projectId)
       );
+    },
+    animationActions() {
+      return animationActions;
     }
   },
   watch: {
-    activeColor: function() {
-      const { top } = this.$refs;
-
-      gsap.set(top, {
-        backgroundColor: this.activeColor
-      });
-    },
     isPastCenter: {
       immediate: true,
       handler: function(val) {
-        console.log(val);
-        if (val) {
-          this.activeHero = this.nextProject.hero;
-        } else {
-          this.activeHero = this.project.hero;
-        }
+        this.animationActions.setHighlight(
+          val ? this.nextProject.id : this.project.id
+        );
+
+        const small = { duration: 0, scale: 0.5 };
+        const big = { duration: 0, scale: 1 };
+        this.animationActions.setAnimation(val ? small : big);
       }
     }
   },
   mounted() {
     window.scrollTo(0, 0);
-    this.$store.dispatch("projects/setProject", this.project.id);
+    this.animationActions.setHighlight(this.project.id);
     this.parallaxItems = this.$refs.images.map(function(component) {
       const rect = component.$el.getBoundingClientRect();
       const start = Number(component.$el.getAttribute("parallax-start"));
@@ -96,14 +95,22 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    const { container, top } = this.$refs;
+    const { container, link } = this.$refs;
     const duration = 0.25;
     const tl = gsap.timeline();
-    tl.to(container, {
+
+    // let interested components know we are animating
+    this.animationActions.setAnimation({ scale: 1, duration });
+
+    gsap.to(window, { duration, scrollTo: document.body.scrollHeight });
+
+    tl.to(link, {
       duration,
-      y: window.innerHeight * -0.5
-    }).to(top, {
-      backgroundColor: this.nextProject.color,
+      y: 100,
+      alpha: 0
+    }).to(container, {
+      duration,
+      y: window.innerHeight * -0.5,
       onComplete: () => {
         next();
       }
@@ -155,6 +162,15 @@ export default {
 .next {
   width: 100vw;
   height: 50vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: 5rem;
+}
+
+.next__link {
+  transform: translateY(-50%);
+  color: black;
 }
 .image {
   width: 25vw;

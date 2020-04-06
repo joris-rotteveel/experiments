@@ -3,7 +3,6 @@ import findIndex from "lodash.findindex";
 export const namespaced = true;
 
 export const state = {
-  currentProject: null,
   list: [
     {
       id: 10,
@@ -118,17 +117,6 @@ export const state = {
       ]
     }
   ]
-};
-
-export const mutations = {
-  SET_PROJECT(state, projectID) {
-    state.currentProject = projectID;
-  }
-};
-export const actions = {
-  setProject({ commit }, id) {
-    commit("SET_PROJECT", id);
-  }
 };
 
 export const getters = {

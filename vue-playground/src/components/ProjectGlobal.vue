@@ -1,41 +1,41 @@
 <template>
   <div ref="container" class="top">
-    <!-- <router-link v-if="prevProject" :to="`/project/${prevProject.id}`"
-      >previous Project {{ prevProject.id }}
-    </router-link>
-    <router-link v-if="nextProject" :to="`/project/${nextProject.id}`"
-      >Next Project {{ nextProject.id }}
-    </router-link> -->
+    <img
+      ref="image"
+      class="top__image"
+      v-if="activeHero"
+      :src="activeHero.src"
+    />
   </div>
 </template>
 
 <script>
 import gsap from "gsap";
+import { mapGetters } from "vuex";
+import { getters as animationGetters } from "../observables/ProjectsObservable";
 
 export default {
   name: "ProjectGlobal",
+  data() {
+    return { activeHero: null };
+  },
   computed: {
-    nextProject() {
-      return this.$store.getters["projects/getNextProject"](
-        parseInt(this.$route.params.id)
-      );
+    ...mapGetters({ getProjectByID: "projects/getProjectByID" }),
+    projectHighlight() {
+      return animationGetters.highlight();
     },
-    prevProject() {
-      return this.$store.getters["projects/getPreviousProject"](
-        parseInt(this.$route.params.id)
-      );
+
+    currentAnimation() {
+      return animationGetters.currentAnimation();
     }
   },
-  beforeRouteUpdate(to, from, next) {
-    gsap.to(this.$refs.container, {
-      backgroundColor: this.nextProject
-        ? this.nextProject.color
-        : this.prevProject.color,
-      onComplete: () => {
-        window.scrollTo(0, 0);
-        next();
-      }
-    });
+  watch: {
+    projectHighlight(current) {
+      this.activeHero = this.getProjectByID(current).hero;
+    },
+    currentAnimation(animationConfig) {
+      gsap.to(this.$refs.image, { ...animationConfig });
+    }
   }
 };
 </script>
@@ -44,15 +44,14 @@ export default {
 .top {
   position: fixed;
   top: 0;
-  display: flex;
-  align-content: flex-end;
-  text-align: center;
-  background-color: grey;
   width: 100%;
   height: 100vh;
   z-index: 1;
-  flex-direction: column;
-  justify-content: flex-end;
   padding-bottom: 20vh;
+}
+
+.top__image {
+  width: 100%;
+  height: auto;
 }
 </style>

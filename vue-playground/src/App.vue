@@ -1,12 +1,17 @@
 <template>
   <div>
-    <router-view :key="$route" />
+    <ProjectGlobal />
+    <router-view :key="$route.fullPath" />
   </div>
 </template>
 
 <script>
+import ProjectGlobal from "./components/ProjectGlobal";
 export default {
   name: "Index",
+  components: {
+    ProjectGlobal
+  },
   computed: {}
 };
 </script>
