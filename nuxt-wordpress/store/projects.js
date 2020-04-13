@@ -39,7 +39,7 @@ const addProjects = (p) => {
     {
       src: 'https://picsum.photos/1200/1200',
       dimensions: { width: 1200, height: 1200 },
-      parallax: { start: 10, end: -10 },
+      parallax: { start: 100, end: -100 },
       color: '#ff00ff'
     },
     {

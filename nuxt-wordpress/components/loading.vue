@@ -15,11 +15,12 @@ export default {
       this.loading = true;
     },
     finish() {
+      this.loading = false;
       gsap.to(this.$refs.loader, {
         autoAlpha: 0,
 
         onComplete: () => {
-          this.loading = false;
+          // this.loading = false;
         }
       });
     }
