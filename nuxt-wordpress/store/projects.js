@@ -24,11 +24,58 @@ export const mutations = {
   }
 };
 
+export const nuxtServerInit = async function({ dispatch }) {
+  await dispatch('core/load');
+};
+
+const addProjects = (p) => {
+  p.images = [
+    {
+      src: 'https://picsum.photos/600/1200',
+      dimensions: { width: 600, height: 1200 },
+      parallax: { start: 0, end: 0 },
+      color: '#ff0000'
+    },
+    {
+      src: 'https://picsum.photos/1200/1200',
+      dimensions: { width: 1200, height: 1200 },
+      parallax: { start: 10, end: -10 },
+      color: '#ff00ff'
+    },
+    {
+      src: 'https://picsum.photos/900/450',
+      dimensions: { width: 900, height: 450 },
+      parallax: { start: 0, end: -0 },
+      color: '#ffff00'
+    },
+    {
+      src: 'https://picsum.photos/901/450',
+      dimensions: { width: 901, height: 450 },
+      parallax: { start: 0, end: -0 },
+      color: '#ff0f0f'
+    },
+    {
+      src: 'https://picsum.photos/901/400',
+      dimensions: { width: 901, height: 400 },
+      parallax: { start: 0, end: -0 },
+      color: '#0f0f0f'
+    }
+  ];
+  p.hero = {
+    src: 'https://picsum.photos/999/999',
+    dimensions: { width: 901, height: 400 },
+    parallax: { start: 0, end: -0 },
+    color: '#0f0f0f'
+  };
+  return p;
+};
+
 export const actions = {
   fetchProjects({ commit }) {
     return APIService.getProjects()
       .then((response) => {
-        commit('SET_PROJECTS', response.data);
+        const projects = response.data.map((p) => addProjects(p));
+        commit('SET_PROJECTS', projects);
       })
       .catch((error) => {
         const notification = {
@@ -46,35 +93,9 @@ export const actions = {
     // retrieve from server
     return APIService.getProject(id)
       .then((response) => {
-        // TEST PURPOSE ONLY
         const project = { ...response.data };
-        project.images = [
-          {
-            src: 'https://picsum.photos/600/1200',
-            dimensions: { width: 600, height: 1200 },
-            parallax: { start: 0, end: 0 }
-          },
-          {
-            src: 'https://picsum.photos/1200/1200',
-            dimensions: { width: 1200, height: 1200 },
-            parallax: { start: 10, end: -10 }
-          },
-          {
-            src: 'https://picsum.photos/900/450',
-            dimensions: { width: 900, height: 450 },
-            parallax: { start: 0, end: -0 }
-          },
-          {
-            src: 'https://picsum.photos/901/450',
-            dimensions: { width: 901, height: 450 },
-            parallax: { start: 0, end: -0 }
-          },
-          {
-            src: 'https://picsum.photos/901/400',
-            dimensions: { width: 901, height: 400 },
-            parallax: { start: 0, end: -0 }
-          }
-        ];
+        addProjects(project);
+
         commit('SET_PROJECT', project);
       })
       .catch((error) => {
@@ -101,6 +122,7 @@ export const getters = {
       if (nextIndex > state.projects.length - 1) return state.projects[0];
       return state.projects[nextIndex];
     }
+
     return null;
   },
 

@@ -1,68 +1,62 @@
 <template>
+  <!-- <div class="top" ref="top">
+      <img :src="activeHero.src" />
+    </div> -->
   <div class="project">
     <main ref="container" class="content">
       <router-link to="/">Go home</router-link>
       <h2>{{ project.id }}</h2>
       <section>
-        <div
+        <IntrinsicImage
           v-for="(image, index) in project.images"
+          ref="images"
           :key="index"
-          class="image"
-        >
-          <IntrinsicImage ref="images" :settings="image"></IntrinsicImage>
-        </div>
+          :settings="image"
+        ></IntrinsicImage>
       </section>
     </main>
 
     <div ref="link" class="next">
-      <router-link
-        v-if="getNextProject(project.id)"
-        class="next__link"
-        :to="`/project/${getNextProject(project.id).id}`"
-      >
-        Next project
+      <router-link class="next__link" :to="`/project/${nextProject.id}`">
+        Next
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import gsap from 'gsap';
-import IntrinsicImage from '@/components/IntrinsicImage.vue';
-import { actions as animationActions } from '@/observables/ProjectsObservable';
-import { mapRange } from '@/utils/math';
+import { mapGetters } from "vuex";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin.js";
+import IntrinsicImage from "../components/IntrinsicImage.vue";
+import { mapRange } from "../utils/math";
+import { actions as animationActions } from "../observables/ProjectsObservable";
+
+gsap.registerPlugin(ScrollToPlugin);
 
 export default {
-  layout: 'project',
   components: {
     IntrinsicImage
-  },
-  async fetch({ store, error, params }) {
-    try {
-      await store.dispatch('projects/fetchProjects');
-      await store.dispatch('projects/fetchProject', params.id);
-    } catch (e) {
-      error({
-        statusCode: 503,
-        message: 'Unable to fetch project #' + params.id
-      });
-    }
   },
 
   data() {
     return {
-      isPastCenter: false,
-      parallaxItems: []
+      projectId: this.$route.params.id,
+      activeColor: null,
+      activeHero: null,
+      isPastCenter: false
     };
   },
 
   computed: {
-    ...mapState({
-      project: (state) => state.projects.project
-    }),
-    getNextProject() {
-      return this.$store.getters['projects/getNextProject'];
+    ...mapGetters({ getProjectByID: "projects/getProjectByID" }),
+    project() {
+      return this.$store.getters["projects/getProjectByID"](this.projectId);
+    },
+    nextProject() {
+      return this.$store.getters["projects/getNextProject"](
+        parseInt(this.projectId)
+      );
     },
     animationActions() {
       return animationActions;
@@ -71,24 +65,24 @@ export default {
   watch: {
     isPastCenter: {
       immediate: true,
-      handler(val) {
+      handler: function(val) {
         this.animationActions.setHighlight(
-          val ? this.getNextProject(this.project.id).id : this.project.id
+          val ? this.nextProject.id : this.project.id
         );
 
         const small = { duration: 0, scale: 0.5 };
         const big = { duration: 0, scale: 1 };
-
         this.animationActions.setAnimation(val ? small : big);
       }
     }
   },
   mounted() {
-    // this.animationActions.setHighlight(this.project.id);
+    window.scrollTo(0, 0);
+    this.animationActions.setHighlight(this.project.id);
     this.parallaxItems = this.$refs.images.map(function(component) {
       const rect = component.$el.getBoundingClientRect();
-      const start = Number(component.$el.getAttribute('parallax-start'));
-      const end = Number(component.$el.getAttribute('parallax-end'));
+      const start = Number(component.$el.getAttribute("parallax-start"));
+      const end = Number(component.$el.getAttribute("parallax-end"));
       return {
         el: component.$el,
         top: rect.top + window.scrollY,
@@ -105,10 +99,9 @@ export default {
     const duration = 0.25;
     const tl = gsap.timeline();
 
-    // let interested components know we are animating
-    this.animationActions.setAnimation({ scale: 1, duration, delay: duration });
+    this.animationActions.setAnimation({ scale: 1, duration });
 
-    // gsap.to(window, { duration, scrollTo: document.body.scrollHeight });
+    gsap.to(window, { duration, scrollTo: document.body.scrollHeight });
 
     tl.to(link, {
       duration,
@@ -118,8 +111,6 @@ export default {
       duration,
       y: window.innerHeight * -0.5,
       onComplete: () => {
-        window.scrollTo(0, 0);
-        gsap.to(container, { duration: 0, y: 0 });
         next();
       }
     });
@@ -146,33 +137,17 @@ export default {
               start,
               end
             );
-            el.style.transform = 'translate3d(0,'.concat(l, '%,0)');
+            el.style.transform = "translate3d(0,".concat(l, "%,0)");
           }
         }
       }
-      // console.log(this.isPastCenter);
       requestAnimationFrame(this.update);
     }
-  },
-  head() {
-    return {
-      title: 'Project #' + this.project.id,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'What you need to know about Project #' + this.project.id
-        }
-      ]
-    };
   }
 };
 </script>
 
 <style scoped>
-.image {
-  width: 35vw;
-}
 .project {
   position: relative;
   z-index: 2;
@@ -195,5 +170,26 @@ export default {
 .next__link {
   transform: translateY(-50%);
   color: black;
+}
+.image {
+  width: 25vw;
+}
+
+.top {
+  position: fixed;
+  top: 0;
+  display: flex;
+  align-content: flex-end;
+  text-align: center;
+  background-color: grey;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.top .image {
+  width: 100vw;
 }
 </style>

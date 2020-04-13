@@ -20,11 +20,11 @@ export default {
   components: {
     ProjectCard
   },
-  async fetch({ store, error }) {
-    try {
-      await store.dispatch('projects/fetchProjects');
-    } catch (e) {}
-  },
+  // async fetch({ store, error }) {
+  //   try {
+  //     await store.dispatch('projects/fetchProjects');
+  //   } catch (e) {}
+  // },
   computed: mapState({
     projects: (state) => {
       return state.projects.projects;
