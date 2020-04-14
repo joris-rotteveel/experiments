@@ -21,6 +21,7 @@ import { mapRange } from '@/utils/math';
 import { getters as animationGetters } from '@/observables/ProjectsObservable';
 
 export default {
+  name: 'ProjectsLayout',
   data() {
     return { activeHero: null };
   },
@@ -48,21 +49,26 @@ export default {
   mounted() {
     this.update();
   },
+  beforeDestroy() {
+    cancelAnimationFrame(this.rafID);
+  },
   methods: {
     update() {
       const currentScrollPos = window.scrollY;
       const isPastCenter = window.scrollY > window.innerHeight * 1.25;
 
-      const l = !isPastCenter
-        ? mapRange(currentScrollPos, 0, window.innerHeight * 10, 0, -100)
+      const offsetY = !isPastCenter
+        ? mapRange(currentScrollPos, 0, window.innerHeight, 0, -5)
         : 0;
-      this.$refs.imageContainer.style.transform = 'translate3d(0,'.concat(
-        l,
-        '%,0)'
-      );
 
-      console.log(l);
-      requestAnimationFrame(this.update);
+      if (this.$refs.imageContainer) {
+        this.$refs.imageContainer.style.transform = 'translate3d(0,'.concat(
+          offsetY,
+          '%,0)'
+        );
+      }
+
+      this.rafID = requestAnimationFrame(this.update);
     }
   }
 };
