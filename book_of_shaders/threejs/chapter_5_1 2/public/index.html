@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      #define PI 3.14159265359
+
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+
+      float mapRange(float current,float fromMin,float fromMax,float toMin,float toMax){
+        return toMin + ((toMax - toMin) * (current - fromMin)) / (fromMax - fromMin);
+
+      }
+
+
+
+      float plot(vec2 st, float pct){
+        return  smoothstep( pct-0.02, pct, st.y) -
+                smoothstep( pct, pct+0.02, st.y);
+      }
+
+      float parabola( float x, float k )
+      {
+        return pow( 4.0*x*(1.0-x), k );
+      }
+
+      float tipi(float x,float curve)
+      {
+        // tipi(st.x,0.5);
+        //http://www.iquilezles.org/apps/graphtoy/?f1(x)=1.-pow(abs(x),0.5)&f2(x)=1.-pow(abs(x-1.0),0.5)&f3(x)=1.-pow(abs(2.0*x-1.),0.5)
+
+        //move the first y=0 point to be 0,0 so move it -1
+        // now the x needs to span 1 unit instead of the current 2
+        // move x  at 2/1 speed
+        float normalisedX=2.0*x-1.0;
+        return 1.-pow(abs(normalisedX),curve);
+      }
+
+      float circle(float x,float curve){
+        //circle(st.x,0.5);
+
+        //http://www.iquilezles.org/apps/graphtoy/?f1(x)=pow(cos(PI*x/2.0),0.5)&f2(x)=pow(cos(PI*(2.0*x-1.0)/2.0),0.5)/2.0
+        float normalisedX=2.0*x-1.0;
+        float shape= pow(cos(PI*(normalisedX)/2.0),curve)/2.0;
+        return shape;
+      }
+      float bevel(float x,float curve){
+        //bevel(st.x,0.5);
+        float normalisedX=2.0*x-1.0;
+
+        //http://www.iquilezles.org/apps/graphtoy/?f1(x)=1.0-pow(max(0.0,abs(x)*2.0-1.0),1.5)
+        float shape= 1.0-pow(max(0.0,abs(normalisedX)*2.0-1.0),curve);
+        return shape;
+      }
+
+
+      //  https://www.flickr.com/photos/kynd/9546075099/
+      void main() {
+          vec2 st = gl_FragCoord.xy/u_resolution;
+
+
+          //float y =circle(st.x,cos(u_time));
+          //float y =circle(st.x,abs(cos(u_time/2.0)*3.0));
+          float y = bevel(st.x,abs(cos(u_time/2.0)*3.0));
+          vec3 color = vec3(y);
+
+          float pct = plot(st,y);
+          color = (1.0-pct)*color+pct*vec3(0.0,1.0,0.0);
+
+          gl_FragColor = vec4(color,1.0);
+      }
+    </script>
+  </body>
+</html>
