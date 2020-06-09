@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+
+      vec3 rect(vec2 st,float size){
+
+        vec3 color = vec3(0.0);
+        float center=0.5-size/2.;
+        // bottom-left
+        vec2 bl = step(vec2(center),st);
+        float pct = bl.x * bl.y;
+
+        // top-right
+         vec2 tr = step(vec2(center),1.0-st);
+         pct *= tr.x * tr.y;
+
+       return vec3(pct);
+      }
+
+      vec3 rectOutline(vec2 st, vec2 position, float size, float borderSize){
+
+        vec3 color = vec3(0.0);
+
+        float x =position.x;
+        float y =position.y;
+
+        float pct =1.; // white
+
+        float left = x - size/2.;
+        float leftWidth=left+borderSize;
+
+        float top = (y + size/2.);
+        float topHeight = top - borderSize;
+
+        float bottom = top - size;
+        float bottomHeight = bottom+borderSize;
+
+        float right = x + size/2.;
+        float rightWidth=right+borderSize;
+
+        // within y
+        if(  st.y > bottom && st.y <= top)
+          {
+            if(st.x>left ){
+              // Left
+              if(st.x<leftWidth){
+
+                pct=0.;
+
+              }else {
+                // Right
+                if(st.x>=right && st.x<rightWidth){
+                  pct=0.;
+                }
+
+                //Bottom
+                if(st.y >bottom && st.y<bottomHeight &&  st.x<right){
+                  pct=0.;
+                }
+                //Top
+                if(st.y <top && st.y>topHeight &&  st.x<right){
+                  pct=0.;
+                }
+              }
+            }
+        }
+
+
+       return vec3(pct);
+      }
+
+
+
+
+      void main(){
+        vec2 st = gl_FragCoord.xy/u_resolution.xy;
+        vec3 color = rect(st,0.25);
+        color = rectOutline(st,vec2(0.5,0.5),0.25,0.01);
+        gl_FragColor = vec4(color,1.0);
+      }
+    </script>
+  </body>
+</html>

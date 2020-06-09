@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        // Author @patriciogv - 2015
+        // http://patriciogonzalezvivo.com
+
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        uniform float u_time;
+
+        float circle(in vec2 _st, in float _radius){
+          vec2 dist = _st-vec2(0.5);
+        return 1.-smoothstep(_radius-(_radius*0.01),
+                               _radius+(_radius*0.01),
+                               dot(dist,dist)*4.0);
+      }
+
+        void main(){
+            vec2 st = gl_FragCoord.xy/u_resolution.xy;
+            vec3 color = vec3(0.0);
+
+            vec2 pos = vec2(0.5)-st;
+
+            float r = length(pos)*2.0;
+            //polar coordinate
+            float a = atan(pos.y,pos.x);
+
+            float b = cos(a*83.);
+            //float c = abs(cos(a*13.));
+            //f = abs(cos(a*2.5))*.5+.3;
+            //f = abs(cos(a*12.)*sin(a*3.))*.8+.1;
+            float kog = smoothstep(-.5,1., cos(a*10.))*0.2+0.5;
+
+            float f=kog - circle(st,0.15);
+         
+
+            color = vec3( 1.-smoothstep(f,f+0.02,r) );
+
+            gl_FragColor = vec4(color, 1.0);
+        }
+    </script>
+  </body>
+</html>

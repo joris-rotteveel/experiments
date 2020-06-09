@@ -9,9 +9,14 @@
   padding: 100px;
 }
 .effect__img {
-  opacity: 0.2;
- 
+  width: 25%;
+  height: auto;
 }
 
+.effect__img--is-enhanced {
+  visibility: hidden;
+}
 
-.section__copy{font-size: 90px;}
+.section__copy {
+  font-size: 90px;
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      #define PI 3.14159265359
+      #define TWO_PI 6.28318530718
+
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+
+      // Reference to
+      // http://thndl.com/square-shaped-shaders.html
+
+      vec3 polygon( vec2 st ,int numberOfSides){
+        float d = 0.0;
+
+        // Remap the space to -1. to 1.
+        st = st *2.-1.;
+
+
+        // Angle and radius from the current pixel
+        float a = atan(st.x,st.y)+PI;
+        float r = TWO_PI/float(numberOfSides);
+
+        // Shaping function that modulate the distance
+        d = cos(floor(.5+a/r)*r-a)*length(st);
+
+        vec3 color = vec3(1.0-smoothstep(.4,.41,d));
+        // color = vec3(d);
+
+        return color;
+      }
+
+      void main(){
+        vec2 st = gl_FragCoord.xy/u_resolution.xy;
+        st.x *= u_resolution.x/u_resolution.y;
+        vec3 color = polygon(st,3);
+
+
+        gl_FragColor = vec4(color,1.0);
+      }
+    </script>
+  </body>
+</html>

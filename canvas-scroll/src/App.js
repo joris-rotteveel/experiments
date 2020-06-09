@@ -2,29 +2,27 @@ import React, { useState } from "react";
 import "./App.css";
 
 import CanvasEffect from "./CanvasEffect";
-import imagePath from "./assets/img.jpg";
+import imageA from "./assets/a.jpg";
+import imageB from "./assets/b.jpg";
+import imageC from "./assets/c.jpg";
+import imageD from "./assets/d.jpg";
+import imageE from "./assets/e.jpg";
 
 function App() {
   const [imageData, setImageData] = useState([]);
-  const [scrollData, setScrollData] = useState({
-    ease: 0.13,
-    current: 0,
-    last: 0
-  });
 
-  const onLoad = event => {
+  const onLoad = (event) => {
     const element = event.target;
-    const newImageData = [...imageData, { element }];
+    element.classList.add("effect__img--is-enhanced");
+    const index = imageData.length + 1;
+
+    const newImageData = [...imageData, { element, index }];
     setImageData(newImageData);
   };
 
-  const scroll = () => {
-    const newScrollData = { ...scrollData };
-
-    newScrollData.current = window.scrollY;
-    // setScrollData(newScrollData);
+  const onImageClick = () => {
+    console.log("click");
   };
-  window.addEventListener("scroll", scroll, { passive: true });
 
   return (
     <div className="App">
@@ -32,10 +30,11 @@ function App() {
         <div className="effect">
           <div className="effect__space-ensurer" />
           <img
-            src={imagePath}
+            src={imageA}
             alt=" alt name"
             className="effect__img"
             onLoad={onLoad}
+            onClick={onImageClick}
           />
         </div>
         <div className="section__copy">
@@ -56,11 +55,18 @@ function App() {
           My milkshake brings all the boys to the yard <br />
           And they're like, it's better than yours
           <br />
+          <img
+            src={imageB}
+            alt=" alt name"
+            className="effect__img"
+            onLoad={onLoad}
+            onClick={onImageClick}
+          />
           Damn right it's better than yours
           <br />I can teach you, but I have to charge
         </div>
       </section>
-      <CanvasEffect imageData={imageData} scrollOffset={scrollData.current}/>
+      <CanvasEffect imageData={imageData} />
     </div>
   );
 }

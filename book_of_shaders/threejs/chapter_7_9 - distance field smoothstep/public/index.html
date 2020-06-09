@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+
+      vec3 smoothCircle(vec2 position, float radius,float blur,vec3 color){
+        vec2 st = gl_FragCoord.xy/u_resolution;
+
+        // a. The DISTANCE from the pixel to the position
+        float pct = distance(2.*st-position,position);
+        pct =  1.-smoothstep(radius-radius*blur,radius,pct);
+
+        return vec3(pct*color);
+      }
+
+      void main(){
+
+
+
+        vec3 color = smoothCircle(vec2(.2,0.26),0.51,0.21,vec3(0.,0.2,1));
+
+        gl_FragColor = vec4( color, 1.0 );
+      }
+    </script>
+  </body>
+</html>

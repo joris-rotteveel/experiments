@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+
+      void main(){
+        vec2 st = gl_FragCoord.xy/u_resolution;
+          float pct = 0.0;
+
+          // a. The DISTANCE from the pixel to the center
+          pct = distance(2.*st-0.5,vec2(0.5));
+        
+
+          // b. The LENGTH of the vector
+          //    from the pixel to the center
+          // vec2 toCenter = vec2(0.5)-st;
+          // pct = length(toCenter);
+
+          // c. The SQUARE ROOT of the vector
+          //    from the pixel to the center
+          // vec2 tC = vec2(0.5)-st;
+          // pct = sqrt(tC.x*tC.x+tC.y*tC.y);
+
+          vec3 color = vec3(pct);
+
+        gl_FragColor = vec4( color, 1.0 );
+      }
+    </script>
+  </body>
+</html>

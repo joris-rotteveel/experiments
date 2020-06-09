@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Book of shaders - chapter 1</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="container"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+
+      void main(){
+          vec2 st = gl_FragCoord.xy/u_resolution.xy;
+          vec3 color = vec3(0.0);
+          float size=0.1;
+          float sharpness= 0.02;
+
+          // bottom-left
+          // Smooth interpolation between 0.1 and 0.9
+          //float y = smoothstep(0.1,0.9,st.x);
+
+          vec2 bl = smoothstep(sharpness,size,st);
+          float pct = bl.x * bl.y;
+
+          // top-right
+          vec2 tr = smoothstep(sharpness,size,1.0-st);
+          pct *= tr.x * tr.y;
+
+          color = vec3(pct);
+
+          gl_FragColor = vec4(color,1.0);
+      }
+    </script>
+  </body>
+</html>
