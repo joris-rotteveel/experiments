@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.54b9c19d.chunk.css",
+    "main.js": "/static/js/main.aa361d4a.chunk.js",
+    "main.js.map": "/static/js/main.aa361d4a.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.09a85be4.chunk.js": "/static/js/2.09a85be4.chunk.js",
+    "static/js/2.09a85be4.chunk.js.map": "/static/js/2.09a85be4.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.ffc7399784f5e2d435640d3ec75079ab.js": "/precache-manifest.ffc7399784f5e2d435640d3ec75079ab.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.54b9c19d.chunk.css.map": "/static/css/main.54b9c19d.chunk.css.map",
+    "static/media/flower-1.jpg": "/static/media/flower-1.09ceb1d8.jpg",
+    "static/media/flower-2.jpg": "/static/media/flower-2.000786ce.jpg",
+    "static/media/flower-3.jpg": "/static/media/flower-3.d3426a60.jpg",
+    "static/media/flower-4.jpg": "/static/media/flower-4.6bd0f171.jpg",
+    "static/media/flower-5.jpg": "/static/media/flower-5.26a14bdd.jpg",
+    "static/media/flower-6.jpg": "/static/media/flower-6.70dbaf79.jpg",
+    "static/media/img.jpg": "/static/media/img.cc7fe472.jpg"
+  }
+}
