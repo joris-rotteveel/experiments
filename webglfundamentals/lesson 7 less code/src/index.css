@@ -1,0 +1,12 @@
+/* remove the border */
+body {
+  margin: 0;
+  border: 0;
+  background-color: white;
+}
+/* make the canvas the size of the viewport */
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}

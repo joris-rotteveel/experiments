@@ -2,11 +2,10 @@ import gsap from "gsap";
 import { createProgramFromScripts, resizeCanvasToDisplaySize } from "./utils";
 import "./index.css";
 import mountain from "./assets/mountain.jpg";
-import street from "./assets/street.jpg";
-import laptop from "./assets/laptop.jpg";
+
 import { m4 } from "./m4";
 
-// https://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
+// https://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
 let isFullScreen = false;
 document.addEventListener("mousedown", onMouseDown);
 
@@ -101,17 +100,17 @@ for (var ii = 0; ii < numToDraw; ++ii) {
   const tr = { x: 1, y: 0 };
   const br = { x: 1, y: 1 };
   var drawInfo = {
-    speed: 0, //50 + 150 * Math.random(),
+    speed: 150, //50 + 150 * Math.random(),
     x: 100, //Math.random() * gl.canvas.width,
     y: 100, // Math.random() * gl.canvas.height,
-    dx: 0, //Math.random() > 0.5 ? -1 : 1,
-    dy: 0, // Math.random() > 0.5 ? -1 : 1,
+    dx: 1, //Math.random() > 0.5 ? -1 : 1,
+    dy: 1, // Math.random() > 0.5 ? -1 : 1,
     xScale: 1,
     yScale: 1,
     offX: 0,
     offY: 0,
     rotation: 0, // Math.random() * Math.PI * 2,
-    deltaRotation: 0, //(0.5 + Math.random() * 0.5) * (Math.random() > 0.5 ? -1 : 1),
+    deltaRotation: -1, //(0.5 + Math.random() * 0.5) * (Math.random() > 0.5 ? -1 : 1),
     width: 1,
     height: 1,
     textureInfo: textureInfos[(Math.random() * textureInfos.length) | 0],
@@ -168,6 +167,7 @@ function animate(expand) {
 }
 
 function update(deltaTime) {
+  if (isFullScreen) return;
   drawInfos.forEach(function (drawInfo) {
     drawInfo.x += drawInfo.dx * drawInfo.speed * deltaTime;
     drawInfo.y += drawInfo.dy * drawInfo.speed * deltaTime;
@@ -230,7 +230,7 @@ function render(time) {
   var deltaTime = Math.min(0.1, now - then);
   then = now;
 
-  update(time);
+  update(deltaTime);
   draw();
 
   requestAnimationFrame(render);
