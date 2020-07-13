@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+
+  color: white;
+  font-family: helvetica;
+  font-size: 200px;
+  font-weight: bold;
+
+  line-height: 1em;
+  text-transform: uppercase;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  width: 100%;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.scroller {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  /* padding-left: 120px;
+  padding-right: 120px; */
+}
+
+.scroller__item {
+  padding-left: 100px;
+  padding-right: 100px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
