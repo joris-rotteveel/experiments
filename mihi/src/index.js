@@ -1,5 +1,6 @@
 import gsap from "gsap";
 import escape from "lodash.escape";
+import pullAllBy from "lodash.pullallby";
 
 import "./index.css";
 
@@ -8,8 +9,8 @@ const API =
 
 const currentIDs = [];
 let defaultNames = [];
-const scrollSpeed = 3;
-const namePadding = 120;
+const scrollSpeed = 1;
+const namePadding = 0;
 
 let animatables;
 let names = [...defaultNames];
@@ -18,8 +19,8 @@ const getNewName = () => {
   if (names.length > 0) {
     return names.shift();
   }
-
-  return defaultNames[Math.round(Math.random() * (defaultNames.length - 1))];
+  names = [...defaultNames];
+  return names.shift();
 };
 
 const update = () => {
@@ -31,7 +32,7 @@ const update = () => {
         animatables[animatables.length - 1].height +
         namePadding;
 
-      animatable.ref.innerHTML = getNewName();
+      animatable.ref.innerHTML = getNewName().name;
       animatable.height = animatable.ref.getBoundingClientRect().height;
       // move this one to be the last in the array
       animatables.push(animatables.shift());
@@ -52,7 +53,7 @@ const startScroll = () => {
     if (previous) {
       ypos = previous.y + previous.height + namePadding;
     }
-    item.innerHTML = getNewName();
+    item.innerHTML = getNewName().name;
     const object = {
       ref: item,
       y: ypos,
@@ -80,19 +81,30 @@ const getData = (initial) => {
         ) {
           //TODO: check if entry isn't already there
           const id = content.col + "" + content.row;
-
-          if (currentIDs.indexOf(id) === -1) {
+          const currentIndex = currentIDs.indexOf(id);
+          const isDeleteFlag = content.inputValue.toLowerCase() === "x";
+          if (!isDeleteFlag && currentIndex === -1) {
             currentIDs.push(id);
-            tempNames.push(escape(content.inputValue));
-            defaultNames.push(escape(content.inputValue));
+
+            tempNames.push({ id: id, name: escape(content.inputValue) });
+            defaultNames.push({ id: id, name: escape(content.inputValue) });
+          } else {
+            //check to see if the name is removed
+
+            if (isDeleteFlag) {
+              pullAllBy(names, [{ id: id }], "id");
+              pullAllBy(defaultNames, [{ id: id }], "id");
+            }
           }
         }
       });
 
       names = [...tempNames, ...names];
 
+      console.log(names);
+
       if (initial) {
-        defaultNames = tempNames.slice(0, tempNames.length - 1);
+        defaultNames = [...tempNames];
         startScroll();
       }
 

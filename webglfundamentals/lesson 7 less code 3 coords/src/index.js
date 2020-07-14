@@ -47,10 +47,11 @@ var uniformsThatAreComputedForEachObject = {};
 var imagesData = [];
 imagesData.push({
   someVar: 1,
-  textureInfo: textureInfos[0],
+  // textureInfo: textureInfos[0],
   materialUniforms: {
     u_color: [0.15, 0.1, 1, 1],
-    u_texture: textureInfos[0].texture,
+    // how come we still see a texture when this is commented out?
+    // u_texture: textureInfos[0].texture,
   },
 });
 
