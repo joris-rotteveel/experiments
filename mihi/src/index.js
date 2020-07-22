@@ -9,11 +9,19 @@ const API =
 
 const currentIDs = [];
 let defaultNames = [];
-const scrollSpeed = 1;
+
+let scrollSpeed = 0.5;
 const namePadding = 0;
 
 let animatables;
 let names = [...defaultNames];
+
+window.addEventListener("keyup", (e) => {
+  if (e.keyCode === 38) scrollSpeed += 0.1;
+  if (e.keyCode === 40) scrollSpeed -= 0.1;
+
+  console.log(scrollSpeed);
+});
 
 const getNewName = () => {
   if (names.length > 0) {
@@ -100,8 +108,6 @@ const getData = (initial) => {
       });
 
       names = [...tempNames, ...names];
-
-      console.log(names);
 
       if (initial) {
         defaultNames = [...tempNames];
