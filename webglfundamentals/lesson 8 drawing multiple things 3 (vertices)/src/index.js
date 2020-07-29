@@ -19,25 +19,35 @@ import Sprite from "./sprite";
 const canvas = document.querySelector("#canvas");
 const gl = canvas.getContext("webgl");
 
+let isFullScreen = false;
+document.addEventListener("mousedown", onMouseDown);
+
 // setup GLSL program
 var programInfo = createProgramInfo(gl, [
   "vertex-shader-3d",
   "fragment-shader-3d",
 ]);
 
-const objectsToDraw = [
-  new Sprite(gl, {
-    programInfo,
-    texture: loadImageAndCreateTextureInfo(mountain, gl),
-  }),
-  new Sprite(gl, {
-    programInfo,
-    texture: loadImageAndCreateTextureInfo(field, gl),
-  }),
-  new Sprite(gl, {
-    programInfo,
-    texture: loadImageAndCreateTextureInfo(food, gl),
-  }),
+const mountainSprite = new Sprite(gl, {
+  programInfo,
+  texture: loadImageAndCreateTextureInfo(mountain, gl),
+});
+
+function onMouseDown() {
+  isFullScreen = !isFullScreen;
+  mountainSprite.fullScreen(isFullScreen);
+}
+
+const spritesToDraw = [
+  mountainSprite,
+  // new Sprite(gl, {
+  //   programInfo,
+  //   texture: loadImageAndCreateTextureInfo(field, gl),
+  // }),
+  // new Sprite(gl, {
+  //   programInfo,
+  //   texture: loadImageAndCreateTextureInfo(food, gl),
+  // }),
 ];
 
 function render() {
@@ -49,9 +59,10 @@ function render() {
   var lastUsedProgramInfo = null;
   var lastUsedBufferInfo = null;
 
-  objectsToDraw.forEach(function (object) {
-    var programInfo = object.programInfo;
-    var bufferInfo = object.bufferInfo;
+  spritesToDraw.forEach(function (sprite) {
+    var programInfo = sprite.programInfo;
+    var bufferInfo = sprite.bufferInfo;
+
     var bindBuffers = false;
     if (programInfo !== lastUsedProgramInfo) {
       lastUsedProgramInfo = programInfo;
@@ -67,14 +78,16 @@ function render() {
     // Setup all the needed attributes.
     if (bindBuffers || bufferInfo !== lastUsedBufferInfo) {
       lastUsedBufferInfo = bufferInfo;
+
       setBuffersAndAttributes(gl, programInfo, bufferInfo);
     }
+    sprite.drawVertices();
 
     // Set the uniforms.
-    setUniforms(programInfo, object.uniforms);
+    setUniforms(programInfo, sprite.uniforms);
 
     // use the correct texture
-    gl.bindTexture(gl.TEXTURE_2D, object.texture.texture);
+    gl.bindTexture(gl.TEXTURE_2D, sprite.texture.texture);
     // Draw
     gl.drawArrays(gl.TRIANGLES, 0, bufferInfo.numElements);
   });
@@ -86,18 +99,17 @@ function translations(time) {
 
   resizeCanvasToDisplaySize(gl.canvas);
 
-  objectsToDraw.forEach((object, index) => {
-    const destX =
-      gl.canvas.width / 2 + (Math.cos(time + index) * gl.canvas.width) / 2;
-    const destY = gl.canvas.height / 2 + index * 100;
+  spritesToDraw.forEach((sprite, index) => {
+    const destX = gl.canvas.width / 2;
+    const destY = gl.canvas.height / 2;
 
-    const { matrix, texture, uniforms } = object;
+    const { matrix, texture, uniforms, bufferInfo } = sprite;
     // update imageUniforms
     matrix.save();
     // this matrix will translate our quad to dstX, dstY
     matrix.translate(destX, destY);
     //rotate it on the left top corner
-    matrix.rotateZ(time);
+    // matrix.rotateZ(time);
     //offset it so we rotate from center of image
     matrix.translate(texture.width / -2, texture.height / -2);
 
@@ -120,6 +132,38 @@ function translations(time) {
     screenMatrix = m4.scale(screenMatrix, texture.width, texture.height, 1);
 
     uniforms.u_matrix = screenMatrix;
+
+    sprite.x = destX;
+    sprite.y = destY;
+
+    // set the points in pixels to distort the vertex
+    const w = texture.width;
+    const h = texture.height;
+
+    const cos = Math.cos(time) * 100;
+    const sin = Math.sin(time) * 75;
+
+    const tl = { x: destX + 0 + cos * 0.25, y: destY + 0 };
+    const bl = { x: destX + 0, y: destY + h + sin * 0.7 };
+    const tr = { x: destX + w - sin, y: destY + 0 + cos * 0.4 };
+    const br = { x: destX + w + cos, y: destY + h - sin };
+    // attributes updating
+    const vertexPositions = [
+      tl.x,
+      tl.y,
+      bl.x,
+      bl.y,
+      tr.x,
+      tr.y,
+      tr.x,
+      tr.y,
+      bl.x,
+      bl.y,
+      br.x,
+      br.y,
+    ];
+    // this will set the vertex at the exact absolute pixel. not relative to it's own position!
+    sprite.updateVertices(vertexPositions);
 
     matrix.restore();
   });
