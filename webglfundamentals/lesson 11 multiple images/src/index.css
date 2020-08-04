@@ -1,0 +1,46 @@
+/* remove the border */
+body {
+  margin: 0;
+  border: 0;
+  background-color: black;
+  color: white;
+}
+/* make the canvas the size of the viewport */
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.effect__img--is-enhanced {
+  visibility: hidden;
+}
+
+.section {
+  padding-left: 150px;
+  padding-right: 150px;
+
+  /* height: 2000px; */
+}
+.section__copy {
+  /* font-size: 90px; */
+  max-width: 300px;
+}
+
+.is-full-screen {
+  overflow: hidden;
+}
+.image-holder {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.ui {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
