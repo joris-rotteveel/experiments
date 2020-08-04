@@ -6,7 +6,6 @@ import {
   createProgramInfo,
 } from "./utils";
 
-// import mountain from "./assets/mountain.jpg";
 import "./index.css";
 
 import { fromImageAndCreateTextureInfo } from "./webgl";
@@ -18,7 +17,12 @@ const canvas = document.querySelector("#canvas");
 const gl = canvas.getContext("webgl");
 
 let isFullScreen = false;
-// document.addEventListener("mousedown", onMouseDown);
+let moveByMouse = false;
+let currentSprite;
+let mouseY = 0;
+let ease = 1;
+document.addEventListener("mousedown", onMouseDown);
+document.addEventListener("mousemove", onMouseMove);
 
 // setup GLSL program
 let programInfo = createProgramInfo(gl, [
@@ -29,12 +33,17 @@ let programInfo = createProgramInfo(gl, [
 const spritesToDraw = [];
 const positionLookup = {};
 
-const mountainImage = document.querySelector(".js-transfer-to-canvas");
+const images = document.querySelectorAll(".js-transfer-to-canvas");
+images.forEach((image) => {
+  if (image.complete) {
+    addImageToCanvas(image);
+  } else {
+    image.addEventListener("load", onImageLoad);
+  }
+});
 
-if (mountainImage.complete) {
-  addImageToCanvas(mountainImage);
-} else {
-  mountainImage.addEventListener("load", onImageLoad);
+function onMouseMove(event) {
+  mouseY = event.clientY;
 }
 
 function onImageLoad(event) {
@@ -46,7 +55,7 @@ function onImageLoad(event) {
 function addImageToCanvas(imageElement) {
   const sprite = new Sprite(gl, {
     programInfo,
-    texture: fromImageAndCreateTextureInfo(mountainImage, gl),
+    texture: fromImageAndCreateTextureInfo(imageElement, gl),
   });
   const index = spritesToDraw.length;
   spritesToDraw.push(sprite);
@@ -61,26 +70,33 @@ function addImageToCanvas(imageElement) {
   imageElement.classList.add("effect__img--is-enhanced");
 }
 
-function onMouseDown() {
+function onMouseDown(e) {
+  // find out if click is withing a sprite bounds/rect
   isFullScreen = !isFullScreen;
+
+  if (isFullScreen) {
+    document.body.classList.add("is-full-screen");
+  } else {
+    document.body.classList.remove("is-full-screen");
+  }
+
   const sprite = spritesToDraw[0];
+  currentSprite = isFullScreen ? sprite : null;
+
   const ratio = sprite.texture.width / sprite.texture.height;
   // set the points in pixels to distort the vertex
   const w = isFullScreen ? gl.canvas.width : sprite.texture.width;
   const h = w / ratio;
 
+  //relative to it's current x/y!
   const tl = { x: 0, y: 0 };
   const bl = { x: 0, y: h };
   const tr = { x: w, y: 0 };
   const br = { x: w, y: h };
 
-  // this will set the vertex at the exact absolute pixel. not relative to it's own position!
-  const xpos = isFullScreen ? 0 : 100;
-  const ypos = isFullScreen ? 0 : 10;
   const { topLeft, bottomLeft, topRight, bottomRight } = sprite.getVertices();
   const animation = { topLeft, bottomLeft, topRight, bottomRight };
 
-  const timeline = gsap.timeline();
   const onUpdate = () => {
     sprite.setVertices(
       animation.topLeft,
@@ -89,38 +105,47 @@ function onMouseDown() {
       animation.bottomRight
     );
   };
+  if (isFullScreen) {
+    gsap.to(sprite, { x: 0, y: 0, delay: 0.5 });
+    ease = 1;
+  } else {
+    ease = 0.2;
+    // gsap.to(sprite, { x: 0, y: 0, delay: 0.5 });
+  }
 
-  timeline.to(sprite, {
-    x: xpos,
-    y: ypos,
-    duration: 0.1,
+  const timeline = gsap.timeline({
+    onUpdate: onUpdate,
+    onComplete: () => {
+      moveByMouse = isFullScreen;
+      ease = 1;
+    },
   });
+
+  const duration = 0.25;
+  timeline.to(".section", { alpha: isFullScreen ? 0 : 1, stagger: 0.2 });
   timeline.to(animation.topLeft, {
     x: tl.x,
     y: tl.y,
-    duration: 0.1,
-    onUpdate: onUpdate,
-  });
-  timeline.to(animation.bottomLeft, {
-    x: bl.x,
-    y: bl.y,
-    duration: 0.1,
-    onUpdate: onUpdate,
+    duration,
   });
   timeline.to(animation.topRight, {
     x: tr.x,
     y: tr.y,
-    duration: 0.1,
-    onUpdate: onUpdate,
+    duration,
+  });
+  timeline.to(animation.bottomLeft, {
+    x: bl.x,
+    y: bl.y,
+    duration,
   });
   timeline.to(animation.bottomRight, {
     x: br.x,
     y: br.y,
-    duration: 0.1,
-    onUpdate: onUpdate,
+    duration,
   });
 }
 
+// render everything
 function renderSprites() {
   // Tell WebGL how to convert from clip space to pixels
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -164,27 +189,33 @@ function renderSprites() {
   });
 }
 
-// Draw the scene.
-function updateSprites(time) {
-  time = time * 0.001;
-
+// update the items in the scene.
+function updateSprites() {
   resizeCanvasToDisplaySize(gl.canvas);
 
   spritesToDraw.forEach((sprite, index) => {
     const baseInfo = positionLookup[index];
     const { DOMPostion } = baseInfo;
 
-    const newY = DOMPostion.y - window.scrollY;
-    const newX = DOMPostion.x + window.scrollX;
-    sprite.x = newX;
-    sprite.y = newY;
+    if (isFullScreen) {
+      if (moveByMouse) {
+        const pctY = mouseY / window.innerHeight;
+        const overlap = currentSprite.getHeight() - window.innerHeight;
+        sprite.y = -overlap * pctY;
+      }
+    } else {
+      const newX = DOMPostion.x + window.scrollX;
+      const newY = DOMPostion.y - window.scrollY;
+      sprite.x += (newX - sprite.x) * ease;
+      sprite.y += (newY - sprite.y) * ease;
+    }
 
     sprite.update();
   });
 }
 
-function update(time) {
-  updateSprites(time);
+function update() {
+  updateSprites();
   renderSprites();
 
   requestAnimationFrame(update);

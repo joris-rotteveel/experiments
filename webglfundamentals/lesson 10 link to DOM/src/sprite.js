@@ -124,6 +124,10 @@ export default class Sprite {
     this.bottomRight.y = this.getClipY(bottomRight.y);
   };
 
+  getHeight = () => {
+    return this.verticesScreen.bottomLeft.y - this.verticesScreen.topLeft.y;
+  };
+
   render = () => {
     this.matrix.restore();
     this.gl.bindBuffer(
