@@ -77,10 +77,8 @@ function addImageToCanvas(imageElement) {
   imageElement.classList.add("effect__img--is-enhanced");
 }
 function onCloseMouseDown(e) {
-  isFullScreen = false;
   //let it ease to the DOM position
   ease = 0.2;
-  moveByMouse = false;
   const sprite = spritesToDraw[currentIndex];
 
   const ratio = sprite.texture.width / sprite.texture.height;
@@ -110,6 +108,8 @@ function onCloseMouseDown(e) {
     onUpdate: onUpdate,
     onComplete: () => {
       ease = 1;
+      moveByMouse = false;
+      isFullScreen = false;
     },
   });
 
@@ -130,6 +130,9 @@ function onCloseMouseDown(e) {
     x: bl.x,
     y: bl.y,
     duration,
+    onComplete: () => {
+      currentIndex = -1;
+    },
   });
   timeline.to(animation.bottomRight, {
     x: br.x,
@@ -137,7 +140,7 @@ function onCloseMouseDown(e) {
     duration,
   });
   timeline.to(".section", { autoAlpha: 1, stagger: 0.2 });
-  currentIndex = -1;
+
   document.body.classList.remove("is-full-screen");
 }
 
