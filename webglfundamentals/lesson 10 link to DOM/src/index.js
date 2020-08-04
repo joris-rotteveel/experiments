@@ -6,10 +6,10 @@ import {
   createProgramInfo,
 } from "./utils";
 
-import mountain from "./assets/mountain.jpg";
+// import mountain from "./assets/mountain.jpg";
 import "./index.css";
 
-import { loadImageAndCreateTextureInfo } from "./webgl";
+import { fromImageAndCreateTextureInfo } from "./webgl";
 import Sprite from "./sprite";
 
 // https://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
@@ -18,18 +18,48 @@ const canvas = document.querySelector("#canvas");
 const gl = canvas.getContext("webgl");
 
 let isFullScreen = false;
-document.addEventListener("mousedown", onMouseDown);
+// document.addEventListener("mousedown", onMouseDown);
 
 // setup GLSL program
-var programInfo = createProgramInfo(gl, [
+let programInfo = createProgramInfo(gl, [
   "vertex-shader-3d",
   "fragment-shader-3d",
 ]);
 
-const mountainSprite = new Sprite(gl, {
-  programInfo,
-  texture: loadImageAndCreateTextureInfo(mountain, gl),
-});
+const spritesToDraw = [];
+const positionLookup = {};
+
+const mountainImage = document.querySelector(".js-transfer-to-canvas");
+
+if (mountainImage.complete) {
+  addImageToCanvas(mountainImage);
+} else {
+  mountainImage.addEventListener("load", onImageLoad);
+}
+
+function onImageLoad(event) {
+  event.target.removeEventListener("load", onImageLoad);
+  const element = event.target;
+  addImageToCanvas(element);
+}
+
+function addImageToCanvas(imageElement) {
+  const sprite = new Sprite(gl, {
+    programInfo,
+    texture: fromImageAndCreateTextureInfo(mountainImage, gl),
+  });
+  const index = spritesToDraw.length;
+  spritesToDraw.push(sprite);
+
+  const rect = imageElement.getBoundingClientRect();
+  const DOMPostion = { x: rect.left, y: rect.top + window.scrollY };
+
+  positionLookup[index] = {
+    DOMPostion,
+  };
+
+  imageElement.classList.add("effect__img--is-enhanced");
+}
 
 function onMouseDown() {
   isFullScreen = !isFullScreen;
@@ -91,8 +121,6 @@ function onMouseDown() {
   });
 }
 
-const spritesToDraw = [mountainSprite];
-
 function renderSprites() {
   // Tell WebGL how to convert from clip space to pixels
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -143,6 +171,14 @@ function updateSprites(time) {
   resizeCanvasToDisplaySize(gl.canvas);
 
   spritesToDraw.forEach((sprite, index) => {
+    const baseInfo = positionLookup[index];
+    const { DOMPostion } = baseInfo;
+
+    const newY = DOMPostion.y - window.scrollY;
+    const newX = DOMPostion.x + window.scrollX;
+    sprite.x = newX;
+    sprite.y = newY;
+
     sprite.update();
   });
 }
