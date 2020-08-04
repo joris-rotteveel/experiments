@@ -16,6 +16,9 @@ import Sprite from "./sprite";
 const canvas = document.querySelector("#canvas");
 const closeFullScreen = document.querySelector(".ui__close");
 const gl = canvas.getContext("webgl");
+// enable alpha
+gl.enable(gl.BLEND);
+gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 let isFullScreen = false;
 let moveByMouse = false;
@@ -116,6 +119,7 @@ function onCloseMouseDown(e) {
   const duration = 0.25;
 
   timeline.to(".ui", { autoAlpha: 0, duration, stagger: 0.2 });
+
   timeline.to(animation.topLeft, {
     x: tl.x,
     y: tl.y,
@@ -139,7 +143,15 @@ function onCloseMouseDown(e) {
     y: br.y,
     duration,
   });
-  timeline.to(".section", { autoAlpha: 1, stagger: 0.2 });
+  timeline.to(".section", {
+    autoAlpha: 1,
+    stagger: 0.2,
+    onComplete: () => {
+      spritesToDraw.forEach((s) => {
+        gsap.to(s, { alpha: 1 });
+      });
+    },
+  });
 
   document.body.classList.remove("is-full-screen");
 }
@@ -152,6 +164,9 @@ function onImageMouseDown(e) {
   document.body.classList.add("is-full-screen");
 
   const sprite = spritesToDraw[currentIndex];
+  spritesToDraw.forEach((s) => {
+    if (s !== sprite) gsap.to(s, { alpha: 0 });
+  });
 
   const ratio = sprite.texture.width / sprite.texture.height;
   // set the points in pixels to distort the vertex
@@ -192,6 +207,7 @@ function onImageMouseDown(e) {
   timeline.to(sprite, {
     x: 0,
     y: 0,
+    alpha: 1,
   });
 
   timeline.to(
@@ -202,6 +218,30 @@ function onImageMouseDown(e) {
       duration,
 
       onComplete: () => {},
+    },
+    `-=${duration}`
+  );
+  timeline.to(
+    animation.bottomRight,
+    {
+      x: br.x,
+      y: br.y,
+      duration,
+    },
+    `-=${duration * 0.3}`
+  );
+  timeline.to(
+    sprite,
+    {
+      y: () => {
+        const pctY = mouseY / window.innerHeight;
+        const overlap = sprite.getHeight() - window.innerHeight;
+        const target = -overlap * pctY;
+        return target;
+      },
+      onComplete: () => {
+        moveByMouse = true;
+      },
     },
     `-=${duration}`
   );
@@ -222,31 +262,6 @@ function onImageMouseDown(e) {
       duration,
     },
     `-=${duration * 0.8}`
-  );
-  timeline.to(
-    animation.bottomRight,
-    {
-      x: br.x,
-      y: br.y,
-      duration,
-    },
-    `-=${duration * 0.3}`
-  );
-
-  timeline.to(
-    sprite,
-    {
-      y: () => {
-        const pctY = mouseY / window.innerHeight;
-        const overlap = sprite.getHeight() - window.innerHeight;
-        const target = -overlap * pctY;
-        return target;
-      },
-      onComplete: () => {
-        moveByMouse = true;
-      },
-    },
-    `-=${duration}`
   );
 }
 
@@ -286,7 +301,6 @@ function renderSprites() {
 
     // Set the uniforms.
     setUniforms(programInfo, sprite.uniforms);
-
     // use the correct texture
     gl.bindTexture(gl.TEXTURE_2D, sprite.texture.texture);
     // Draw

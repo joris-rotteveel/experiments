@@ -10,6 +10,7 @@ export default class Sprite {
   constructor(gl, { programInfo, texture }) {
     this.x = 0;
     this.y = 0;
+    this.alpha = 1;
     //rads
     this.rotation = 0;
     // pixels;
@@ -39,6 +40,7 @@ export default class Sprite {
     this.uniforms = {
       u_matrix: m4.identity(),
       u_textureMatrix: m4.identity(),
+      u_alpha: this.alpha,
     };
     this.matrix = new MatrixStack();
 
@@ -99,6 +101,7 @@ export default class Sprite {
     );
 
     this.uniforms.u_matrix = screenMatrix;
+    this.uniforms.u_alpha = this.alpha;
   };
 
   getVertices = () => this.verticesScreen;
