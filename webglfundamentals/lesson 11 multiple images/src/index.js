@@ -178,36 +178,73 @@ function onImageMouseDown(e) {
   const timeline = gsap.timeline({
     onUpdate: onUpdate,
     onComplete: () => {
-      moveByMouse = true;
       ease = 1;
       gsap.to(".ui", { autoAlpha: 1 });
     },
   });
 
   const duration = 0.25;
-  timeline.to(".section", { autoAlpha: 0 });
-  timeline.to(sprite, { x: 0, y: 0 });
 
-  timeline.to(animation.topLeft, {
-    x: tl.x,
-    y: tl.y,
-    duration,
+  timeline.to(".section", { autoAlpha: 0 });
+  timeline.to(sprite, {
+    x: 0,
+    y: 0,
   });
-  timeline.to(animation.topRight, {
-    x: tr.x,
-    y: tr.y,
-    duration,
-  });
-  timeline.to(animation.bottomLeft, {
-    x: bl.x,
-    y: bl.y,
-    duration,
-  });
-  timeline.to(animation.bottomRight, {
-    x: br.x,
-    y: br.y,
-    duration,
-  });
+
+  timeline.to(
+    animation.topLeft,
+    {
+      x: tl.x,
+      y: tl.y,
+      duration,
+
+      onComplete: () => {},
+    },
+    `-=${duration}`
+  );
+  timeline.to(
+    animation.topRight,
+    {
+      x: tr.x,
+      y: tr.y,
+      duration,
+    },
+    `-=${duration * 0.5}`
+  );
+  timeline.to(
+    animation.bottomLeft,
+    {
+      x: bl.x,
+      y: bl.y,
+      duration,
+    },
+    `-=${duration * 0.8}`
+  );
+  timeline.to(
+    animation.bottomRight,
+    {
+      x: br.x,
+      y: br.y,
+      duration,
+    },
+    `-=${duration * 0.3}`
+  );
+
+  timeline.to(
+    sprite,
+    {
+      y: () => {
+        const pctY = mouseY / window.innerHeight;
+        const overlap = sprite.getHeight() - window.innerHeight;
+        const target = -overlap * pctY;
+        return target;
+      },
+      onComplete: () => {
+        moveByMouse = true;
+      },
+    },
+    `-=${duration}`
+  );
 }
 
 // render everything
