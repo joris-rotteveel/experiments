@@ -1,0 +1,51 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: bold;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+.container {
+  margin: 40px;
+}
+.ticker {
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.menu-item {
+  font-size: 0px;
+  position: relative;
+  list-style: none;
+  text-align: center;
+}
+.main-menu__copies {
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: red;
+}
+
+.main-menu__span {
+  padding-right: 30px;
+  font-size: 90px;
+  /* background: blue; */
+}
+.main-menu__span--original {
+  pointer-events: all;
+}
+
+.js-copy {
+  /* color: red; */
+}
