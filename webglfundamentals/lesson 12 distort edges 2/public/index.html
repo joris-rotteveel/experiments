@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <img
+      src="pattern.png"
+      alt=" alt name"
+      class="effect__img js-transfer-to-canvas"
+    />
+
+    <canvas id="canvas"></canvas>
+    <script id="vertex-shader-3d" type="x-shader/x-vertex">
+
+      attribute vec2 a_position;
+      attribute vec2 a_texcoord;
+
+      uniform mat4 u_matrix;
+      uniform mat4 u_textureMatrix;
+
+      varying vec2 v_texcoord;
+
+      void main() {
+
+        gl_Position = u_matrix * vec4(a_position,1,1);
+        v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
+
+      }
+    </script>
+    <!-- fragment shader -->
+    <script id="fragment-shader-3d" type="x-shader/x-fragment">
+      precision mediump float;
+
+      varying vec2 v_texcoord;
+
+      uniform sampler2D u_texture;
+      uniform float u_alpha;
+      uniform float u_time;
+
+      //red
+      vec3 colorA = vec3(0.5, 0.0, 0.5);
+      //green
+      vec3 colorB = vec3(1.0, 0.41, 0.71);
+
+      void main() {
+
+        // based on https://www.youtube.com/watch?v=OdbmWYe9hAQ
+
+
+        vec2 uv = v_texcoord;
+
+        // get a value 1 ,0 ,1 , the length gives us between -.5 and .5
+        float sides = 2.0 * length(uv.x - 0.5);
+
+        // Step will return 0 unless the value is over 0.9,
+        float threshold=0.8;
+        float masking = step(threshold,sides);
+        // sides - 0.9 will give us a value between 0 and 0.1. Multiply by 10 to get a value between 0-1
+        float sidesGradient = 10.0 * (sides - threshold) * masking;
+
+        // scale the UV x and/or y by the gradient
+        float distortion = 0.3 * sidesGradient;
+        vec2 scale = vec2( 1.0 + distortion ,1.0-distortion);
+        // move uv to center (-0.5), scale, move back from center
+        uv = (uv - vec2(0.5)) * scale + vec2(0.5);
+
+        uv.x += u_time * 0.005;
+        uv = fract(uv*1.);
+        vec4 color =texture2D(u_texture, uv);
+
+
+
+        gl_FragColor = color * u_alpha;
+
+        //gl_FragColor = vec4(sidesGradient);
+      }
+    </script>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
