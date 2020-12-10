@@ -14,11 +14,12 @@ const sketch = ({ width, height }) => {
   const margin = width * 0.15;
   const fontFamily = '"Helvetica"';
   const background = "hsl(0, 0%, 0%)";
-  const sentnce = "founded in 2012, grafik studio   ";
+  const sentnce =
+    "People-driven  digital experiences  We make beautiful, usable, useful digital products and experiences that enable change for good. Through our human-centred approach, we’ll help you do the things that matter, better. ";
   const characters = sentnce.split("");
 
-  const redIndexStart = sentnce.indexOf("grafik");
-  const redIndexEnd = "grafik".length;
+  const redIndexStart = sentnce.indexOf("milkshake");
+  const redIndexEnd = "milkshake".length;
 
   const typeState = [...characters];
 
@@ -38,7 +39,7 @@ const sketch = ({ width, height }) => {
         if (charIndex > characters.length - 1) {
           loops++;
           charIndex = 0;
-          if (loops === 21) {
+          if (loops === 4) {
             shouldChange = true;
           } else {
             shouldChange = false;
@@ -53,7 +54,7 @@ const sketch = ({ width, height }) => {
         points.push({
           size: isInRange ? 40 : 20, //+ 20 * (charIndex / characters.length), //Math.abs(baseSize * size + random.gaussian() * sizeOffset),
           rotation: n * Math.PI * 0.65,
-          offsetAngle: n * Math.PI,
+          offsetAngle: n * Math.PI * 2,
           character: characters[charIndex],
           characterIndex: charIndex,
           position: [u, v],
@@ -80,10 +81,10 @@ const sketch = ({ width, height }) => {
         // do the magic here - we can change this formula and get very different behaviour
         const x =
           lerp(margin, width - margin, u) +
-          Math.cos(+angle) * (characterIndex * 58);
+          Math.cos(+angle) * (9000 / characterIndex);
         const y =
           lerp(margin, height - margin, v) +
-          Math.cos(+angle) * (-100 + characterIndex * 54);
+          Math.sin(+angle) * (-100 + 9000 / characterIndex);
 
         context.fillStyle = colour;
         context.textAlign = "center";
