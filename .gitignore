@@ -8,3 +8,5 @@ frontendmasters/canvas-webgl/media
 out.mp4
 canvas_typography-flowfield/_media
 webglfundamentals/lesson 6 drawimage quad manipulation 2/build
+.DS_Store
+architecture/node_modules
