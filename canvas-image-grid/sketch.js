@@ -7,15 +7,15 @@ new p5();
 
 const settings = {
   p5: true,
-  dimensions: [2048, 2048]
+  dimensions: [1024, 1024],
 };
 
 const sketch = ({ width, height }) => {
-  const count = 75;
+  const count = 155;
   const margin = width * 0.01;
   const sourceImage = new Image();
 
-  const createGrid = context => {
+  const createGrid = (context) => {
     const points = [];
     let xoff = 0;
     let yoff = 0;
@@ -40,7 +40,7 @@ const sketch = ({ width, height }) => {
         const totalPercentage = red + green + blue;
 
         const scale = 1 - totalPercentage; //noise(xoff, yoff, zoff);
-        const angleFromColour = 0//scale * Math.PI * 2 * magnifyFactor;
+        const angleFromColour = 0; //scale * Math.PI * 2 * magnifyFactor;
         const rotation = p5.Vector.fromAngle(angleFromColour)
           .setMag(1)
           .heading();
@@ -49,7 +49,7 @@ const sketch = ({ width, height }) => {
           rotation: rotation,
           scale: scale,
           color: "#ff000ff",
-          position: [u, v]
+          position: [u, v],
         });
 
         yoff += noiseSpeed;
@@ -58,6 +58,8 @@ const sketch = ({ width, height }) => {
     }
     return points;
   };
+
+  const coords = [];
 
   return ({ context, width, height }) => {
     sourceImage.onload = () => {
@@ -69,7 +71,6 @@ const sketch = ({ width, height }) => {
       let counterY = 0;
       const step = 70;
 
-
       const grid = createGrid(context);
 
       context.fillStyle = "#e3e3e3";
@@ -80,30 +81,39 @@ const sketch = ({ width, height }) => {
         const x = lerp(margin, width - margin, u);
         const y = lerp(margin, height - margin, v);
 
-        context.fillStyle = context.strokeStyle = color;
-
         const size = 30 * scale;
 
         // draw -
+        coords.push({ x, y, size, rotation, color });
+      });
 
+      // clear canvas
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, width, height);
+      coords.forEach(({ x, y, size, rotation, color }) => {
+        context.fillStyle = context.strokeStyle = color;
         context.save();
         context.translate(x, y);
         context.rotate(rotation);
 
-        // context.strokeRect(0, 0, size, size);
-        context.moveTo(0, 0);
-        context.lineTo(-size / 2, 0);
-        context.moveTo(0, 0);
-        context.lineTo(size / 2, 0);
-        context.moveTo(0, -size / 2);
+        // context.moveTo(0, 0);
+        context.strokeRect(0, 0, size, size);
+        context.beginPath();
+        context.arc(0, 0, size / 12, 0, Math.PI * 2, true);
+        context.closePath();
+        // context.arc(0, 0, size / 10, 0, 2 * Math.PI, false);
+        // context.lineTo(-size / 2, 0);
+        // context.moveTo(0, 0);
+        // context.lineTo(size / 2, 0);
+        // context.moveTo(0, -size / 2);
 
-        context.lineTo(0, size / 2);
+        // context.lineTo(0, size / 2);
 
         context.restore();
         context.stroke();
       });
     };
-    sourceImage.src = "zak.jpg";
+    sourceImage.src = "ben.png";
     // sourceImage.onload();
   };
 };

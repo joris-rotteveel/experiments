@@ -1,0 +1,51 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style type="text/css">
+      .emoji {
+        animation: animateIn 1s;
+        -moz-animation: animateIn 1s; /* Firefox */
+        -webkit-animation: animateIn 1s; /* Safari and Chrome */
+        -o-animation: animateIn 1s; /* Opera */
+
+        animation-fill-mode: forwards;
+        -moz-animation-fill-mode: forwards;
+        -webkit-animation-fill-mode: forwards;
+        -o-animation-fill-mode: forwards;
+
+        opacity: 0;
+      }
+      @keyframes animateIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div data-emoji="😀" data-amount="9"></div>
+    <div data-emoji="😈" data-amount="2"></div>
+    <div data-emoji="🖕" data-amount="55"></div>
+  </body>
+  <script>
+    const statsContainers = document.querySelectorAll("[data-emoji");
+    let delay = 0;
+    statsContainers.forEach((div) => {
+      const emoji = div.dataset.emoji;
+      const amount = parseInt(div.dataset.amount);
+
+      for (let i = 0; i < amount; i++) {
+        const span = document.createElement("span");
+        span.classList.add("emoji");
+        span.appendChild(document.createTextNode(emoji));
+        div.appendChild(span);
+        span.style.animationDelay = delay + "s";
+        delay += 0.05;
+      }
+    });
+  </script>
+</html>

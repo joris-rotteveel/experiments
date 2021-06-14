@@ -3,10 +3,10 @@ import escape from "lodash.escape";
 import pullAllBy from "lodash.pullallby";
 
 import "./index.css";
-
-const API =
-  "https://spreadsheets.google.com/feeds/cells/1jbdZ46T6sr-OUrvVtx3GqsP_7Vcy-JJOZrEr6Ycckoc/1/public/full?alt=json";
-
+// https://docs.google.com/spreadsheets/d/1NnurPXUWJxIb0Rd6HLwJ1IdVoRpf_b_vgUlLRgXyjIc/edit?usp=sharing
+const googs = "1NnurPXUWJxIb0Rd6HLwJ1IdVoRpf_b_vgUlLRgXyjIc";
+const API = `https://spreadsheets.google.com/feeds/cells/${googs}/1/public/full?alt=json`;
+console.log(API);
 const currentIDs = [];
 let defaultNames = [];
 

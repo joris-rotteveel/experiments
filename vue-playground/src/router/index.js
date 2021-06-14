@@ -10,23 +10,22 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
   },
   {
     path: "/project/:id",
     name: "Project",
-    component: Project
+    component: Project,
     // route level code-splitting
     // this generates a separate chunk (project.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     // component: () =>
     //   import(/* webpackChunkName: "project" */ "../views/Project.vue")
-  }
+  },
 ];
 
-console.log("start");
 const router = new VueRouter({
-  routes
+  routes,
 });
 
 export default router;
