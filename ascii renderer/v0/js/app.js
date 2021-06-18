@@ -20,7 +20,7 @@ export default class Sketch {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0xeeeeee, 1);
+    this.renderer.setClearColor(0, 1);
 
     this.container.appendChild(this.renderer.domElement);
 

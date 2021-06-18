@@ -13,3 +13,4 @@ architecture/node_modules
 .cache
 ascii renderer/v0/.parcel-cache
 awwwards-academy/boilerplate/.parcel-cache
+ascii renderer/v0/dist
