@@ -1,0 +1,5 @@
+install parcel
+```npx parcel index.html```
+
+run if you have parcel
+```parcel index.html```
