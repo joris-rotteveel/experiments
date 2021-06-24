@@ -59,5 +59,5 @@ void main()	{
 
 	gl_FragColor = vec4(pixelColour);
 	gl_FragColor = vec4(shape);
-	gl_FragColor=color;
+	// gl_FragColor=color;
 }

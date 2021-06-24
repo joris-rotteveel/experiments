@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "dev": "parcel index.html"
+  },
+  "devDependencies": {
+    "@parcel/transformer-glsl": "2.0.0-beta.2",
+    "@parcel/transformer-image": "2.0.0-beta.2"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.7",
+    "glsl-aastep": "^1.0.1",
+    "gsap": "^3.7.0",
+    "layout-bmfont-text": "^1.3.4",
+    "load-bmfont": "^1.4.1",
+    "three": "^0.129.0"
+  }
+}
