@@ -24,7 +24,7 @@ float draw_circle(vec2 coord, float radius){
 
 void main()	{
 
-	vec2 gridSize=vec2(40.0);
+	vec2 gridSize=vec2(10);
 	vec2 pixelatedUv=vUv;
 
 	pixelatedUv.x-= mod(pixelatedUv.x, 1.0 / gridSize.x);
@@ -53,22 +53,28 @@ void main()	{
 
 	vec2 fontTextureUv = vUv;
 	//this only works if texture and font texture are the same size
-	float fontTextureWidth = 438.0;
+	float fontTextureWidth = 438.0;//438.0;
 	float fontTextureHeight = 438.0;
+
+	float imageTextureWidth = 438.0;
+	float imageTextureHeight = 438.0;
+
+	float charInPixelsWidth=10.0;
+
 	
 
-	float charWidth = 10.0/fontTextureWidth;
-	float charHeight =10.0/fontTextureHeight;
+	float charWidth = (charInPixelsWidth/fontTextureWidth);
+	float charHeight = (charInPixelsWidth/fontTextureHeight);
 	
-	float maxCharIndex=ceil(fontTextureWidth/10.0);
-	float charIndex=floor(fontTextureUv.x * maxCharIndex);
+	float maxCharIndex = ceil(fontTextureWidth/charInPixelsWidth);
+	float charIndex = floor(fontTextureUv.x * maxCharIndex);
 	//grab the index compared to the current greyscale
-	float greyScaleIndex=greyscale*maxCharIndex;
+	float greyScaleIndex = greyscale*maxCharIndex;
 
 	float col = charIndex * charWidth ;
-	float row = charHeight * 0.;
+	float row = charHeight  * 0.;
 
-	vec4 characterRect =vec4(col,row ,charWidth ,charHeight);
+	vec4 characterRect = vec4(col,row ,charWidth ,charHeight);
 	
 	
 
@@ -77,12 +83,11 @@ void main()	{
 	// left Top= vec2(0.0,1.0);
 	// right Top= vec2(1.0,1.0);
 	//normalize to the characterRect
-	float normalisedX =characterRect.x+ mod(fontTextureUv.x , charWidth);
+	float normalisedX = characterRect.x+ mod(fontTextureUv.x, charWidth);
 	// we ned to flip the axis for some reason, substract from 1...
-	float normalisedY = characterRect.y+mod(1.0-fontTextureUv.y , charHeight);
+	float normalisedY = characterRect.y + mod(1.0-fontTextureUv.y, charHeight);
 
-	vec2 charUv=vec2(normalisedX,1.0-normalisedY);
-
+	vec2 charUv = vec2(normalisedX,1.0-normalisedY);
 	// charUv=vec2(0.0,1.0);
 
 	//get the scale texture
@@ -97,5 +102,5 @@ void main()	{
 	// gl_FragColor = vec4(pixelColour);
 	// gl_FragColor = vec4(circle);
 	//  gl_FragColor = color;
-	//  gl_FragColor = original*sdf;
+	 gl_FragColor = pixelColour*sdf;
 }
